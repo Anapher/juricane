@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import { Box, Button, Typography } from '@mui/material';
+import { NavLink } from 'react-router-dom';
+import to from 'renderer/utils/to';
 
 const tabs = ['Waitlist', 'Playlists', 'Tracks', 'Artists', 'Genres'];
 
@@ -12,6 +14,9 @@ const HeaderContainer = styled('div')({
 });
 
 export default function Header() {
+  const getPathFromTab = (tabname: string) => {
+    return `/${tabname.toLowerCase()}`;
+  };
   return (
     <HeaderContainer>
       <Box flex={1}>
@@ -19,16 +24,24 @@ export default function Header() {
       </Box>
       <Box p={2} display="flex" alignItems="flex-end">
         <Box>
-          {tabs.map((x) => (
+          {tabs.map((name) => (
             <Button
-              key={x}
+              key={name}
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...to(getPathFromTab(name), NavLink)}
+              style={({ isActive }) => ({
+                color: isActive ? 'white' : undefined,
+              })}
               sx={{
                 p: 2,
                 fontSize: 16,
-                color: x === 'Waitlist' ? 'white' : undefined,
+                // color: pathname.startsWith(getPathFromTab(name))
+                //   ? 'white'
+                //   : undefined,
+                transition: 'color 0.2s ease',
               }}
             >
-              {x}
+              {name}
             </Button>
           ))}
         </Box>
