@@ -237,7 +237,7 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "juricane",
+      "owner": "anapher",
       "repo": "juricane"
     }
   },
