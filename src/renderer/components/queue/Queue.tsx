@@ -8,8 +8,8 @@ import {
   TableRow,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { selectQueueTracks } from './selectors';
 import { formatSeconds } from 'renderer/utils/duration';
+import { selectQueueTracks } from './selectors';
 
 // const buffer1 = new Tone.Buffer(
 //   'file:////Users/vgriebel/Downloads/Kollegah_und_Farid_Bang-Jung_Brutal_Gutaussehend_2-Premium_Edition-DE-2013-NOiR/06-kollegah_und_farid_bang-stiernackenkommando-noir.mp3'

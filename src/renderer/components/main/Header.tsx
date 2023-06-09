@@ -29,6 +29,7 @@ export default function Header() {
               key={name}
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...to(getPathFromTab(name), NavLink)}
+              // @ts-ignore
               style={({ isActive }) => ({
                 color: isActive ? 'white' : undefined,
               })}
