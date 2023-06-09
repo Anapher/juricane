@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import to from 'renderer/utils/to';
+import logo from '../../../../assets/logo.png';
 
 const tabs = ['Waitlist', 'Playlists', 'Tracks', 'Artists', 'Genres'];
 
@@ -19,8 +20,8 @@ export default function Header() {
   };
   return (
     <HeaderContainer>
-      <Box flex={1}>
-        <Typography>LOGO</Typography>
+      <Box flex={1} display="flex" alignItems="center" sx={{ pl: 3 }}>
+        <img src={logo} width={240} alt="Lienke SounDevices" />
       </Box>
       <Box p={2} display="flex" alignItems="flex-end">
         <Box>
