@@ -15,6 +15,7 @@ export type MusicPlayerState = {
   playlists: Playlist[];
   currentPlaylist: Playlist | null;
   waitlist: Track[];
+  loaded: boolean;
 };
 
 const initialState: MusicPlayerState = {
@@ -22,6 +23,7 @@ const initialState: MusicPlayerState = {
   playlists: [playlist],
   currentPlaylist: playlist,
   waitlist: [sampleTrack],
+  loaded: false,
 };
 
 export const musicPlayerSlice = createSlice({
