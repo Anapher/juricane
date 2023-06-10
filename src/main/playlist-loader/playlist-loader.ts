@@ -1,9 +1,16 @@
 import fs from 'fs/promises';
 import { glob } from 'glob';
 import path from 'node:path';
-import parseM3uFile from './m3u-parser';
+import parseM3uFile, { M3uTrack } from './m3u-parser';
 
-export default async function loadAllPlaylistsFromDirectory(directory: string) {
+export type M3uPlaylist = {
+  path: string;
+  tracks: M3uTrack[];
+};
+
+export default async function loadAllPlaylistsFromDirectory(
+  directory: string
+): Promise<M3uPlaylist[]> {
   const playlistFiles = await glob(`${directory}/**/*.m3u`);
 
   const playlistStrings = await Promise.all(

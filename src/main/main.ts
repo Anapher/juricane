@@ -13,6 +13,7 @@ import path from 'path';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import loadAllPlaylistsFromDirectory from './playlist-loader/playlist-loader';
+import buildMusicLibrary from './playlist-loader/music-library';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -30,7 +31,8 @@ ipcMain.on('open-playlists', async (event) => {
 
   if (result.canceled) return;
 
-  loadAllPlaylistsFromDirectory(result.filePaths[0]);
+  const playlists = await loadAllPlaylistsFromDirectory(result.filePaths[0]);
+  const library = buildMusicLibrary(playlists);
 
   console.log(result.filePaths);
 });
