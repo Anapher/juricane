@@ -1,19 +1,22 @@
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import { Provider, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import {
   Navigate,
   Route,
   MemoryRouter as Router,
   Routes,
 } from 'react-router-dom';
-import Main from './components/main/Main';
 import { RootState, store } from './app/store';
-import Queue from './components/queue/Queue';
-import Playlists from './components/playlists/Playlists';
-import Tracks from './components/tracks/Tracks';
 import Artists from './components/artists/Artists';
 import Genres from './components/genres/Genres';
+import Main from './components/main/Main';
 import NotLoadedScreen from './components/not-loaded/NotLoadedScreen';
+import Playlists from './components/playlists/Playlists';
+import Queue from './components/queue/Queue';
+import Tracks from './components/tracks/Tracks';
+import { musicLibraryLoaded } from './slices/musicPlayer';
+import { MusicLibrary } from './types';
 
 const darkTheme = createTheme({
   palette: {
@@ -22,7 +25,18 @@ const darkTheme = createTheme({
 });
 
 function AppRoutes() {
-  const loaded = useSelector((state: RootState) => state.musicPlayer.loaded);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handler = (arg: unknown) => {
+      const library = arg as MusicLibrary;
+      dispatch(musicLibraryLoaded(library));
+    };
+
+    window.electron.ipcRenderer.on('open-playlists', handler);
+  }, [dispatch]);
+
+  const loaded = useSelector((state: RootState) => !!state.musicPlayer.library);
   if (!loaded) {
     return <NotLoadedScreen />;
   }
@@ -40,7 +54,7 @@ function AppRoutes() {
           <Route path="genres" element={<Genres />} />
           <Route index element={<Navigate to="/waitlist" replace />} />
         </Route>
-      </Routes>{' '}
+      </Routes>
     </Router>
   );
 }
@@ -50,7 +64,6 @@ export default function App() {
     <Provider store={store}>
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
-
         <AppRoutes />
       </ThemeProvider>
     </Provider>

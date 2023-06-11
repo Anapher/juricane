@@ -34,7 +34,7 @@ ipcMain.on('open-playlists', async (event) => {
   const playlists = await loadAllPlaylistsFromDirectory(result.filePaths[0]);
   const library = buildMusicLibrary(playlists);
 
-  console.log(result.filePaths);
+  event.reply('open-playlists', library);
 });
 
 if (process.env.NODE_ENV === 'production') {
