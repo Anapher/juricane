@@ -15,6 +15,9 @@ import { resolveHtmlPath } from './util';
 import loadAllPlaylistsFromDirectory from './playlist-loader/playlist-loader';
 import buildMusicLibrary from './playlist-loader/music-library';
 
+const isDebug =
+  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (event, arg) => {
@@ -24,14 +27,23 @@ ipcMain.on('ipc-example', async (event, arg) => {
 });
 
 ipcMain.on('open-playlists', async (event) => {
-  const result = await dialog.showOpenDialog(mainWindow!, {
-    properties: ['openDirectory'],
-    title: 'Please open the directory with playlist files',
-  });
+  let playlistPath = '';
+  if (isDebug) {
+    playlistPath =
+      '/Users/vgriebel/Documents/github/juricane/test_music/Playlisten';
+  } else {
+    const result = await dialog.showOpenDialog(mainWindow!, {
+      properties: ['openDirectory'],
+      title: 'Please open the directory with playlist files',
+    });
 
-  if (result.canceled) return;
+    if (result.canceled) return;
 
-  const playlists = await loadAllPlaylistsFromDirectory(result.filePaths[0]);
+    // eslint-disable-next-line prefer-destructuring
+    playlistPath = result.filePaths[0];
+  }
+
+  const playlists = await loadAllPlaylistsFromDirectory(playlistPath);
   const library = buildMusicLibrary(playlists);
 
   event.reply('open-playlists', library);
@@ -41,9 +53,6 @@ if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
-
-const isDebug =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
@@ -90,7 +99,7 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.on('ready-to-show', async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
