@@ -7,13 +7,13 @@ type Props = {
 
 function Base64Image({ base64Image }: { base64Image?: string | boolean }) {
   if (!base64Image) {
-    return <div style={{ flex: 1, minWidth: 0 }} />;
+    return null;
   }
 
   return (
     <img
       src={`data:image/jpeg;base64,${base64Image}`}
-      style={{ flex: 1, minWidth: 0 }}
+      style={{ flex: 1, minWidth: 0, objectFit: 'cover' }}
       alt=""
     />
   );

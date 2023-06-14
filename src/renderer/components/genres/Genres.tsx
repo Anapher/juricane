@@ -1,3 +1,8 @@
+import { useSelector } from 'react-redux';
+import { selectGenreGroups } from './selectors';
+import GroupedTracks from '../grouped-tracks/GroupedTracks';
+
 export default function Genres() {
-  return <div>Genres</div>;
+  const genreGroups = useSelector(selectGenreGroups);
+  return <GroupedTracks groups={genreGroups} />;
 }
