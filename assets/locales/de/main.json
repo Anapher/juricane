@@ -1,0 +1,9 @@
+{
+  "name": "asdrtyrty",
+  "components": {
+    "not_loaded": {
+      "text": "Please open a folder which contains playlist files (m3us)",
+      "button_text": "Open playlist folder"
+    }
+  }
+}

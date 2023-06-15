@@ -16,6 +16,7 @@ import NotLoadedScreen from './components/not-loaded/NotLoadedScreen';
 import Playlists from './components/playlists/Playlists';
 import Queue from './components/queue/Queue';
 import Tracks from './components/tracks/Tracks';
+import './app/i18n';
 
 const darkTheme = createTheme({
   palette: {
