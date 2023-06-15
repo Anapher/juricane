@@ -1,8 +1,7 @@
-import { useSelector } from 'react-redux';
 import GroupedTracks from '../grouped-tracks/GroupedTracks';
-import { selectArtistGroups } from './selectors';
+import { useGroupOfTracks } from '../grouped-tracks/selectors';
 
 export default function Artists() {
-  const genreGroups = useSelector(selectArtistGroups);
-  return <GroupedTracks groups={genreGroups} />;
+  const groups = useGroupOfTracks((track) => track.artist);
+  return <GroupedTracks groups={groups} />;
 }

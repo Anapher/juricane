@@ -1,14 +1,24 @@
-import { Box, Button, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Box, Typography } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { useMusicLibrary } from 'renderer/app/queries';
+import { setLibraryPath } from 'renderer/slices/music-player-slice';
 
 export default function NotLoadedScreen() {
-  const handleLoadFolder = () => {
-    // calling IPC exposed from preload script
-    window.electron.ipcRenderer.once('ipc-example', (arg) => {
-      // eslint-disable-next-line no-console
-      console.log(arg);
-    });
-    window.electron.ipcRenderer.sendMessage('open-playlists');
+  // const { isLoading, error, data } = useQuery('repoData', () =>
+  //   fetch('https://api.github.com/repos/tannerlinsley/react-query').then(
+  //     (res) => res.json()
+  //   )
+  // );
+  const dispatch = useDispatch();
+
+  const handleLoadFolder = async () => {
+    const folder = await window.electron.ipcRenderer.openPlaylistDirectory();
+    if (!folder) return;
+    dispatch(setLibraryPath(folder));
   };
+
+  const { isLoading } = useMusicLibrary();
 
   return (
     <Box
@@ -21,7 +31,9 @@ export default function NotLoadedScreen() {
         <Typography gutterBottom>
           Please open a folder which contains playlist files (m3us)
         </Typography>
-        <Button onClick={handleLoadFolder}>Open playlist folder</Button>
+        <LoadingButton loading={isLoading} onClick={handleLoadFolder}>
+          Open playlist folder
+        </LoadingButton>
       </Box>
     </Box>
   );

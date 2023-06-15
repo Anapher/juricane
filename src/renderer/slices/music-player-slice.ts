@@ -1,30 +1,30 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { MusicLibrary, Playlist, Track } from 'renderer/types';
+import { Playlist, Track } from 'renderer/types';
 
 export type MusicPlayerState = {
   currentlyPlaying: Track | null;
   currentPlaylist: Playlist | null;
   waitlist: Track[];
-  library: MusicLibrary | null;
+  libraryPath: string | null;
 };
 
 const initialState: MusicPlayerState = {
   currentlyPlaying: null,
   currentPlaylist: null,
   waitlist: [],
-  library: null,
+  libraryPath: null,
 };
 
 export const musicPlayerSlice = createSlice({
   name: 'musicPlayer',
   initialState,
   reducers: {
-    musicLibraryLoaded(state, { payload }: PayloadAction<MusicLibrary>) {
-      state.library = payload;
+    setLibraryPath(state, { payload }: PayloadAction<string>) {
+      state.libraryPath = payload;
     },
   },
 });
 
-export const { musicLibraryLoaded } = musicPlayerSlice.actions;
+export const { setLibraryPath } = musicPlayerSlice.actions;
 
 export default musicPlayerSlice.reducer;

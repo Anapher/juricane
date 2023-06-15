@@ -1,9 +1,9 @@
-import { useSelector } from 'react-redux';
 import GroupedTracks from '../grouped-tracks/GroupedTracks';
-import { selectPlaylists } from './selectors';
+import { usePlaylists } from './selectors';
 
 export default function Playlists() {
-  const playlists = useSelector(selectPlaylists);
+  const playlists = usePlaylists();
+
   return (
     <GroupedTracks
       groups={playlists.map((x) => ({

@@ -1,4 +1,4 @@
-import { RootState } from 'renderer/app/store';
+import { useMusicLibrary } from 'renderer/app/queries';
 import { MusicLibrary, Playlist, Track } from 'renderer/types';
 
 export type PlaylistModel = Omit<Playlist, 'tracks'> & {
@@ -17,11 +17,9 @@ export const selectPlaylist = (
   };
 };
 
-export const selectPlaylists = (state: RootState) => {
-  if (!state.musicPlayer.library) return [];
-  const { library } = state.musicPlayer;
+export const usePlaylists = () => {
+  const { data } = useMusicLibrary();
+  if (!data) return [];
 
-  return state.musicPlayer.library.playlists.map((x) =>
-    selectPlaylist(library, x)
-  );
+  return data.playlists.map((x) => selectPlaylist(data, x));
 };

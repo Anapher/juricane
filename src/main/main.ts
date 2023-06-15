@@ -20,33 +20,29 @@ const isDebug =
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+ipcMain.handle('dialog:openPlaylistDirectory', async () => {
+  if (isDebug) {
+    return '/Users/vgriebel/Documents/github/juricane/test_music/Playlisten';
+  }
+  const result = await dialog.showOpenDialog(mainWindow!, {
+    properties: ['openDirectory'],
+    title: 'Bitte öffne den Ordner mit den Playlist-Dateien',
+  });
+
+  if (result.canceled) return null;
+
+  return result.filePaths[0];
 });
 
-ipcMain.on('open-playlists', async (event) => {
-  let playlistPath = '';
-  if (isDebug) {
-    playlistPath =
-      '/Users/vgriebel/Documents/github/juricane/test_music/Playlisten';
-  } else {
-    const result = await dialog.showOpenDialog(mainWindow!, {
-      properties: ['openDirectory'],
-      title: 'Please open the directory with playlist files',
-    });
-
-    if (result.canceled) return;
-
-    // eslint-disable-next-line prefer-destructuring
-    playlistPath = result.filePaths[0];
-  }
-
-  const playlists = await loadAllPlaylistsFromDirectory(playlistPath);
+ipcMain.handle('files:loadLibrary', async (event, directory: string) => {
+  const playlists = await loadAllPlaylistsFromDirectory(directory);
   const library = buildMusicLibrary(playlists);
 
-  event.reply('open-playlists', library);
+  await new Promise((resolve) => {
+    setTimeout(resolve, 1500);
+  });
+
+  return library;
 });
 
 if (process.env.NODE_ENV === 'production') {
