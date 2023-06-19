@@ -21,15 +21,36 @@ import { formatSeconds } from 'renderer/utils/duration';
 
 export type ColumnName = 'title' | 'artist' | 'duration' | 'album' | 'genre';
 
+export type TrackNavigationRoute = {
+  type: 'artists' | 'albums' | 'genres';
+  name: string;
+};
+
+export type ConfigProps = {
+  hiddenColumns?: ColumnName[];
+  onAddToQueue: (track: Track) => void;
+  onNavigate: (route: TrackNavigationRoute) => void;
+};
+
+type Props = ConfigProps & {
+  tracks: Track[];
+};
+
 type Column = {
   name: ColumnName;
   txName: string;
-  renderContent: (track: Track) => React.ReactNode;
+  renderContent: (
+    track: Track,
+    onNavigate: (route: TrackNavigationRoute) => void
+  ) => React.ReactNode;
   offsetHeader?: boolean;
   width?: number;
 };
 
-function renderActionCell(text?: string | null) {
+function renderActionCell(
+  text: string | null | undefined,
+  onClick: () => void
+) {
   if (!text) {
     return null;
   }
@@ -43,6 +64,7 @@ function renderActionCell(text?: string | null) {
         justifyContent: 'flex-start',
         boxShadow: 1,
       })}
+      onClick={onClick}
     >
       <Typography variant="body2">{text}</Typography>
     </ButtonBase>
@@ -58,19 +80,28 @@ const columns: Column[] = [
   {
     name: 'artist',
     txName: 'components.track_list.artist',
-    renderContent: (track) => renderActionCell(track.artist),
+    renderContent: (track, onNavigate) =>
+      renderActionCell(track.artist, () =>
+        onNavigate({ type: 'artists', name: track.artist! })
+      ),
     offsetHeader: true,
   },
   {
     name: 'album',
     txName: 'components.track_list.album',
-    renderContent: (track) => renderActionCell(track.album),
+    renderContent: (track, onNavigate) =>
+      renderActionCell(track.album, () =>
+        onNavigate({ type: 'albums', name: track.album! })
+      ),
     offsetHeader: true,
   },
   {
     name: 'genre',
     txName: 'components.track_list.genre',
-    renderContent: (track) => renderActionCell(track.genre),
+    renderContent: (track, onNavigate) =>
+      renderActionCell(track.genre, () =>
+        onNavigate({ type: 'genres', name: track.artist! })
+      ),
     width: 160,
     offsetHeader: true,
   },
@@ -83,7 +114,7 @@ const columns: Column[] = [
   },
 ];
 
-function createFixedHeaderContent(hiddenColumns: ColumnName[]) {
+function createFixedHeaderContent({ hiddenColumns }: ConfigProps) {
   // eslint-disable-next-line react/function-component-definition
   return () => {
     const { t } = useTranslation();
@@ -96,7 +127,7 @@ function createFixedHeaderContent(hiddenColumns: ColumnName[]) {
           style={{ width: 140, backgroundColor: bgColor }}
         />
         {columns
-          .filter((x) => !hiddenColumns.includes(x.name))
+          .filter((x) => !hiddenColumns?.includes(x.name))
           .map(({ name, txName, width, offsetHeader }) => (
             <TableCell
               key={name}
@@ -134,15 +165,20 @@ const VirtuosoTableComponents: TableComponents<Track> = {
   )),
 };
 
-function rowContent(_index: number, row: Track, hiddenColumns: ColumnName[]) {
+function rowContent(
+  _index: number,
+  row: Track,
+  { hiddenColumns, onAddToQueue, onNavigate }: ConfigProps
+) {
   return (
     <>
       <TableCell>
         <Fab
+          onClick={() => onAddToQueue(row)}
           variant="extended"
           size="small"
           color="primary"
-          aria-label="add"
+          aria-label="add to waitlist"
           sx={{ zIndex: 0 }}
         >
           <AddIcon sx={{ mr: 1 }} />
@@ -151,31 +187,23 @@ function rowContent(_index: number, row: Track, hiddenColumns: ColumnName[]) {
       </TableCell>
 
       {columns
-        .filter((x) => !hiddenColumns.includes(x.name))
+        .filter((x) => !hiddenColumns?.includes(x.name))
         .map(({ name, renderContent }) => (
-          <TableCell key={name}>{renderContent(row)}</TableCell>
+          <TableCell key={name}>{renderContent(row, onNavigate)}</TableCell>
         ))}
     </>
   );
 }
 
-type ConfigProps = {
-  hiddenColumns?: ColumnName[];
-};
-
-type Props = ConfigProps & {
-  tracks: Track[];
-};
-
-export default function TracksTable({ tracks, hiddenColumns = [] }: Props) {
+export default function TracksTable({ tracks, ...configProps }: Props) {
   const theme = useTheme();
 
   return (
     <TableVirtuoso
       data={tracks}
       components={VirtuosoTableComponents}
-      fixedHeaderContent={createFixedHeaderContent(hiddenColumns)}
-      itemContent={(index, data) => rowContent(index, data, hiddenColumns)}
+      fixedHeaderContent={createFixedHeaderContent(configProps)}
+      itemContent={(index, data) => rowContent(index, data, configProps)}
       style={{ borderRadius: theme.shape.borderRadius * 2 }}
     />
   );

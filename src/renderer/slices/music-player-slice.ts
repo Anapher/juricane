@@ -22,9 +22,12 @@ export const musicPlayerSlice = createSlice({
     setLibraryPath(state, { payload }: PayloadAction<string>) {
       state.libraryPath = payload;
     },
+    addToWaitlist(state, { payload }: PayloadAction<Track>) {
+      state.waitlist.push(payload);
+    },
   },
 });
 
-export const { setLibraryPath } = musicPlayerSlice.actions;
+export const { setLibraryPath, addToWaitlist } = musicPlayerSlice.actions;
 
 export default musicPlayerSlice.reducer;

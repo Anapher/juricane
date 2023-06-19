@@ -1,8 +1,7 @@
 import { Box } from '@mui/material';
-import { Track } from 'renderer/types';
 
 type Props = {
-  tracks: Track[];
+  images: string[];
 };
 
 function Base64Image({ base64Image }: { base64Image?: string | boolean }) {
@@ -19,11 +18,7 @@ function Base64Image({ base64Image }: { base64Image?: string | boolean }) {
   );
 }
 
-export default function TracksPreview({ tracks }: Props) {
-  const images = tracks
-    .map((x) => x.imageBase64)
-    .filter((x): x is string => !!x);
-
+export default function TracksPreview({ images }: Props) {
   return (
     <Box display="flex" flexDirection="column" sx={{ aspectRatio: 1 }}>
       <Box display="flex" minHeight={0} flex={1}>

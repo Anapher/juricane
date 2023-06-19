@@ -2,7 +2,7 @@ import nodeid3 from 'node-id3';
 import { Track } from 'renderer/types';
 import { M3uTrack } from './m3u-parser';
 
-export default function loadMusicTags(m3uTrack: M3uTrack): Track {
+export default function loadMusicTags(m3uTrack: M3uTrack, id: number): Track {
   const tags = nodeid3.read(m3uTrack.path);
 
   const imageBase64 =
@@ -19,5 +19,6 @@ export default function loadMusicTags(m3uTrack: M3uTrack): Track {
     imageBase64: imageBase64 || undefined,
     duration: m3uTrack.durationInSeconds,
     url: m3uTrack.path,
+    id,
   };
 }

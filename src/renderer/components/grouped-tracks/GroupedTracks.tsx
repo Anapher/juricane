@@ -6,30 +6,15 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { CategoryInfo } from 'renderer/types';
 import TrackListPreview from '../track-list-preview/TrackListPreview';
-import TrackList from './TrackList';
-import { ColumnName } from './TracksTable';
-import { TrackGroup } from './types';
 
 type Props = {
-  groups: TrackGroup[];
-  hiddenColumns?: ColumnName[];
+  groups: CategoryInfo[];
+  onNavigateToGroup: (group: CategoryInfo) => void;
 };
 
-export default function GroupedTracks({ groups, hiddenColumns }: Props) {
-  const [openTrackGroup, setOpenTrackGroup] = useState<TrackGroup | null>(null);
-
-  if (openTrackGroup) {
-    return (
-      <TrackList
-        group={openTrackGroup}
-        onGoBack={() => setOpenTrackGroup(null)}
-        hiddenColumns={hiddenColumns}
-      />
-    );
-  }
-
+export default function GroupedTracks({ groups, onNavigateToGroup }: Props) {
   return (
     <Grid
       flex={1}
@@ -44,9 +29,9 @@ export default function GroupedTracks({ groups, hiddenColumns }: Props) {
       {groups.map((group) => (
         <Grid item key={group.id} display="flex" xs={1} alignItems="flex-start">
           <Card sx={{ flex: 1, minHeight: 0 }}>
-            <CardActionArea onClick={() => setOpenTrackGroup(group)}>
+            <CardActionArea onClick={() => onNavigateToGroup(group)}>
               <CardMedia>
-                <TrackListPreview tracks={group.tracks} />
+                <TrackListPreview images={group.previewImageBase64} />
               </CardMedia>
               <CardContent>
                 <Typography

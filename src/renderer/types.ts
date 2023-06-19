@@ -1,4 +1,5 @@
 export type Track = {
+  id: number;
   title: string;
   url: string;
   duration: number;
@@ -10,13 +11,18 @@ export type Track = {
   imageBase64?: string;
 };
 
-export type Playlist = {
-  tracks: string[]; // paths
+export type CategoryInfo = {
+  id: string;
   name: string;
-  url: string;
+  trackIds: number[];
+  previewImageBase64: string[];
 };
 
 export type MusicLibrary = {
-  tracks: Record<string, Track>;
-  playlists: Playlist[];
+  tracks: Track[];
+
+  playlists: CategoryInfo[];
+  artists: Record<string, CategoryInfo>;
+  genres: Record<string, CategoryInfo>;
+  albums: Record<string, CategoryInfo>;
 };
