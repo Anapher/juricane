@@ -11,7 +11,9 @@ export type M3uPlaylist = {
 export default async function loadAllPlaylistsFromDirectory(
   directory: string
 ): Promise<M3uPlaylist[]> {
-  const playlistFiles = await glob(`${directory}/**/*.m3u`);
+  const playlistFiles = await glob(
+    `${directory.replaceAll(path.sep, '/')}/**/*.m3u`
+  );
 
   const playlistStrings = await Promise.all(
     playlistFiles.map(
