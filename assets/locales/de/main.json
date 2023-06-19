@@ -4,6 +4,13 @@
     "not_loaded": {
       "text": "Please open a folder which contains playlist files (m3us)",
       "button_text": "Open playlist folder"
+    },
+    "track_list": {
+      "title": "Title",
+      "artist": "Artist",
+      "duration": "Duration",
+      "album": "Album",
+      "genre": "Genre"
     }
   }
 }

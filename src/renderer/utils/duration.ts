@@ -3,6 +3,6 @@ export function secondsToMs(seconds: number): [number, number] {
 }
 
 export function formatSeconds(seconds: number) {
-  const [s, m] = secondsToMs(seconds);
+  const [m, s] = secondsToMs(seconds);
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
