@@ -25,15 +25,17 @@ export default function TracksPreview({ tracks }: Props) {
     .filter((x): x is string => !!x);
 
   return (
-    <Box display="flex" flexDirection="column">
-      <Box display="flex" minHeight={0}>
+    <Box display="flex" flexDirection="column" sx={{ aspectRatio: 1 }}>
+      <Box display="flex" minHeight={0} flex={1}>
         <Base64Image base64Image={images.length > 0 && images[0]} />
         <Base64Image base64Image={images.length > 1 && images[1]} />
       </Box>
-      <Box display="flex" minHeight={0}>
-        <Base64Image base64Image={images.length > 2 && images[2]} />
-        <Base64Image base64Image={images.length > 3 && images[3]} />
-      </Box>
+      {images.length > 2 && (
+        <Box display="flex" minHeight={0} flex={1}>
+          <Base64Image base64Image={images.length > 2 && images[2]} />
+          <Base64Image base64Image={images.length > 3 && images[3]} />
+        </Box>
+      )}
     </Box>
   );
 }

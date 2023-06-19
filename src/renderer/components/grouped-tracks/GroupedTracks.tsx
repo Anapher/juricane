@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Track } from 'renderer/types';
-import TracksPreview from '../tracks-preview/TracksPreview';
+import TrackListPreview from '../track-list-preview/TrackListPreview';
 
 export type TrackGroup = {
   id: any;
@@ -29,7 +29,7 @@ export default function GroupedTracks({ groups }: Props) {
             <Card sx={{ flex: 1, minHeight: 0 }}>
               <CardActionArea>
                 <CardMedia>
-                  <TracksPreview tracks={tracks} />
+                  <TrackListPreview tracks={tracks} />
                 </CardMedia>
                 <CardContent>
                   <Typography
