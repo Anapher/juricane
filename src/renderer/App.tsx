@@ -11,11 +11,11 @@ import './app/i18n';
 import { useMusicLibrary } from './app/queries';
 import { store } from './app/store';
 import CategoryGroupPage from './components/category/CategoryGroupPage';
-import CategoryPage from './components/category/CategoryPage';
+import CategoryTracksPage from './components/category/CategoryTracksPage';
 import Main from './components/main/Main';
 import NotLoadedScreen from './components/not-loaded/NotLoadedScreen';
 import Queue from './components/queue/Queue';
-import Tracks from './components/tracks/Tracks';
+import AllTracks from './components/tracks/AllTracks';
 
 const darkTheme = createTheme({
   palette: {
@@ -43,9 +43,18 @@ function AppRoutes() {
                 <CategoryGroupPage categorySelector={(x) => x.playlists} />
               }
             />
-            <Route path=":id" element={<CategoryPage />} />
+            <Route
+              path=":id"
+              element={
+                <CategoryTracksPage
+                  selectCategoryInfo={(library, id) =>
+                    library.playlists[Number(id)]
+                  }
+                />
+              }
+            />
           </Route>
-          <Route path="tracks" element={<Tracks />} />
+          <Route path="tracks" element={<AllTracks />} />
           <Route path="artists">
             <Route
               index
@@ -53,14 +62,47 @@ function AppRoutes() {
                 <CategoryGroupPage categorySelector={(x) => x.artists} />
               }
             />
-            <Route path=":id" element={<CategoryPage />} />
+            <Route
+              path=":id"
+              element={
+                <CategoryTracksPage
+                  selectCategoryInfo={(library, id) =>
+                    library.artists[encodeURIComponent(id)]
+                  }
+                  hiddenColumn="artist"
+                />
+              }
+            />
           </Route>
           <Route path="genres">
             <Route
               index
               element={<CategoryGroupPage categorySelector={(x) => x.genres} />}
             />
-            <Route path=":id" element={<CategoryPage />} />
+            <Route
+              path=":id"
+              element={
+                <CategoryTracksPage
+                  selectCategoryInfo={(library, id) =>
+                    library.genres[encodeURIComponent(id)]
+                  }
+                  hiddenColumn="genre"
+                />
+              }
+            />
+          </Route>
+          <Route path="albums">
+            <Route
+              path=":id"
+              element={
+                <CategoryTracksPage
+                  selectCategoryInfo={(library, id) =>
+                    library.albums[encodeURIComponent(id)]
+                  }
+                  hiddenColumn="album"
+                />
+              }
+            />
           </Route>
           <Route index element={<Navigate to="/waitlist" replace />} />
         </Route>

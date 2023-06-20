@@ -1,9 +1,9 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Playlist, Track } from 'renderer/types';
+import { Track } from 'renderer/types';
 
 export type MusicPlayerState = {
   currentlyPlaying: Track | null;
-  currentPlaylist: Playlist | null;
+  currentPlaylist: number | null;
   waitlist: Track[];
   libraryPath: string | null;
 };

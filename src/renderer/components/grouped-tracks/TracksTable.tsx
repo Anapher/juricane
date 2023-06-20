@@ -100,7 +100,7 @@ const columns: Column[] = [
     txName: 'components.track_list.genre',
     renderContent: (track, onNavigate) =>
       renderActionCell(track.genre, () =>
-        onNavigate({ type: 'genres', name: track.artist! })
+        onNavigate({ type: 'genres', name: track.genre! })
       ),
     width: 160,
     offsetHeader: true,

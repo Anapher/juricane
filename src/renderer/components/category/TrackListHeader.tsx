@@ -1,13 +1,12 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Fab, Stack, Typography } from '@mui/material';
-import { TrackGroup } from './types';
 
 type Props = {
-  group: TrackGroup;
+  title: string;
   onGoBack: () => void;
 };
 
-export default function TrackListHeader({ group, onGoBack }: Props) {
+export default function TrackListHeader({ title, onGoBack }: Props) {
   return (
     <Stack direction="row" spacing={2} alignItems="center">
       <Fab
@@ -20,7 +19,7 @@ export default function TrackListHeader({ group, onGoBack }: Props) {
         <ArrowBackIcon sx={{ mr: 2 }} />
         Back
       </Fab>
-      <Typography variant="h6">{group.name}</Typography>
+      <Typography variant="h6">{title}</Typography>
     </Stack>
   );
 }

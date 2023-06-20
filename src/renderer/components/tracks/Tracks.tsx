@@ -1,23 +1,23 @@
-import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useMusicLibrary } from 'renderer/app/queries';
-import TracksTable from '../grouped-tracks/TracksTable';
+import { Track } from 'renderer/types';
+import TracksTable, { ColumnName } from '../grouped-tracks/TracksTable';
 
-export default function Tracks() {
+type Props = {
+  tracks: Track[];
+  hiddenColumn?: ColumnName;
+};
+
+export default function Tracks({ tracks, hiddenColumn }: Props) {
   const navigate = useNavigate();
 
-  const library = useMusicLibrary();
-  if (!library.data) return null;
-
   return (
-    <Box flex={1} m={3}>
-      <TracksTable
-        tracks={Object.values(library.data.tracks)}
-        onNavigate={({ name, type }) =>
-          navigate(`/${type}/${encodeURIComponent(name)}`)
-        }
-        onAddToQueue={() => {}}
-      />
-    </Box>
+    <TracksTable
+      tracks={tracks}
+      onNavigate={({ name, type }) =>
+        navigate(`/${type}/${encodeURIComponent(name)}`)
+      }
+      onAddToQueue={() => {}}
+      hiddenColumns={hiddenColumn && [hiddenColumn]}
+    />
   );
 }
