@@ -38,8 +38,6 @@ ipcMain.handle('files:loadLibrary', async (event, directory: string) => {
   const playlists = await loadAllPlaylistsFromDirectory(directory);
   const library = buildMusicLibrary(playlists);
 
-  console.log(library);
-
   await new Promise((resolve) => {
     setTimeout(resolve, 1500);
   });

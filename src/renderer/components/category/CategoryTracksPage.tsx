@@ -1,10 +1,9 @@
-import { Box, Paper } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Paper, Typography } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { useMusicLibrary } from 'renderer/app/queries';
 import { CategoryInfo, MusicLibrary } from 'renderer/types';
-import Tracks from '../tracks/Tracks';
-import TrackListHeader from './TrackListHeader';
 import { ColumnName } from '../grouped-tracks/TracksTable';
+import Tracks from '../tracks/Tracks';
 
 type Props = {
   selectCategoryInfo: (
@@ -20,7 +19,6 @@ export default function CategoryTracksPage({
 }: Props) {
   const { id } = useParams();
   const library = useMusicLibrary();
-  const navigate = useNavigate();
 
   if (!library.data) return null;
   if (!id) return null;
@@ -34,8 +32,8 @@ export default function CategoryTracksPage({
 
   return (
     <Box flex={1} display="flex" m={2} flexDirection="column">
-      <TrackListHeader title={data.name} onGoBack={() => navigate(-1)} />
-      <Paper sx={{ flex: 1, mt: 2, borderRadius: 3 }} elevation={6}>
+      <Typography variant="h6">{data.name}</Typography>
+      <Paper sx={{ flex: 1, mt: 1, borderRadius: 3 }} elevation={6}>
         <Tracks tracks={tracks} hiddenColumn={hiddenColumn} />
       </Paper>
     </Box>

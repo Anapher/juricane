@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import AddIcon from '@mui/icons-material/Add';
 import {
-  ButtonBase,
+  Chip,
   Fab,
   Paper,
   Table,
@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
   useTheme,
 } from '@mui/material';
 import React from 'react';
@@ -54,20 +53,13 @@ function renderActionCell(
   if (!text) {
     return null;
   }
+
   return (
-    <ButtonBase
-      sx={() => ({
-        py: 1,
-        px: 2,
-        backgroundColor: 'action.hover',
-        borderRadius: 8,
-        justifyContent: 'flex-start',
-        boxShadow: 1,
-      })}
+    <Chip
+      label={text}
       onClick={onClick}
-    >
-      <Typography variant="body2">{text}</Typography>
-    </ButtonBase>
+      sx={{ backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
+    />
   );
 }
 
