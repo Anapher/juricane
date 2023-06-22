@@ -67,7 +67,7 @@ export default function buildMusicLibrary(
       name: path.basename(playlist.path, path.extname(playlist.path)),
       trackIds: playlist.tracks
         .map((t) => processedTracks.get(t.path))
-        .filter((x): x is number => !!x),
+        .filter((x): x is number => x !== -1),
       id: id.toString(),
       previewImageBase64: _.chain(playlist.tracks)
         .map((x) => {

@@ -12,11 +12,13 @@ import {
   TableRow,
   useTheme,
 } from '@mui/material';
+import _ from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { TableComponents, TableVirtuoso } from 'react-virtuoso';
 import { Track } from 'renderer/types';
 import { formatSeconds } from 'renderer/utils/duration';
+import CheckIcon from '@mui/icons-material/Check';
 
 export type ColumnName = 'title' | 'artist' | 'duration' | 'album' | 'genre';
 
@@ -27,6 +29,7 @@ export type TrackNavigationRoute = {
 
 export type ConfigProps = {
   hiddenColumns?: ColumnName[];
+  queuedTracks: number[];
   onAddToQueue: (track: Track) => void;
   onNavigate: (route: TrackNavigationRoute) => void;
 };
@@ -160,8 +163,11 @@ const VirtuosoTableComponents: TableComponents<Track> = {
 function rowContent(
   _index: number,
   row: Track,
-  { hiddenColumns, onAddToQueue, onNavigate }: ConfigProps
+  { hiddenColumns, onAddToQueue, onNavigate, queuedTracks }: ConfigProps
 ) {
+  const queuePosition = _.indexOf(queuedTracks, row.id);
+  const queued = queuePosition > -1;
+
   return (
     <>
       <TableCell>
@@ -171,10 +177,13 @@ function rowContent(
           size="small"
           color="primary"
           aria-label="add to waitlist"
-          sx={{ zIndex: 0 }}
+          sx={{ zIndex: 0, width: 120 }}
+          disabled={queued}
         >
-          <AddIcon sx={{ mr: 1 }} />
-          Waitlist
+          {queued ? <CheckIcon sx={{ mr: 1 }} /> : <AddIcon sx={{ mr: 1 }} />}
+          <span style={{ flex: 1, textAlign: 'left' }}>
+            {queued ? `Pos. ${queuePosition + 1}` : 'Waitlist'}
+          </span>
         </Fab>
       </TableCell>
 

@@ -1,12 +1,12 @@
 import { Howl } from 'howler';
 import { TypedEmitter } from 'tiny-typed-emitter';
 
-interface AudioPlayerEvents {
+interface PlayerEvents {
   playStateChanged: () => void;
   requestNextSong: () => void;
 }
 
-export default class AudioPlayer extends TypedEmitter<AudioPlayerEvents> {
+export default class Player extends TypedEmitter<PlayerEvents> {
   private currentSound: Howl | null = null;
 
   private currentFadingOut: Howl | null = null;
@@ -37,6 +37,11 @@ export default class AudioPlayer extends TypedEmitter<AudioPlayerEvents> {
     this.currentSound?.volume(value);
   }
 
+  public destroy() {
+    this.currentSound?.unload();
+    this.currentFadingOut?.unload();
+  }
+
   public nextTrack(src: string, skipCrossfade = false) {
     const onPlayStateChanged = () => this.emit('playStateChanged');
 
@@ -55,7 +60,6 @@ export default class AudioPlayer extends TypedEmitter<AudioPlayerEvents> {
         } else {
           this.currentFadingOut = this.currentSound;
           this.currentFadingOut.fade(this.volume, 0, this.crossfadeDuration);
-          this.currentFadingOut.play();
 
           this.currentFadingOutCleanupTimeout = setTimeout(() => {
             this.currentFadingOut?.unload();
