@@ -32,7 +32,7 @@ export default function useAudioPlayer() {
   useEffect(() => {
     if (!currentTrack) return;
 
-    player.current.nextTrack('file://' + currentTrack.url);
+    player.current.nextTrack(`file://${currentTrack.url}`);
     console.log('play', currentTrack);
   }, [currentTrack]);
 

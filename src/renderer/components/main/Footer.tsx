@@ -1,10 +1,10 @@
 import { Box, Button, LinearProgress, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { playNextTrack } from 'renderer/slices/music-player-slice';
 import { formatSeconds } from 'renderer/utils/duration';
 import AudioPlayerContext from '../audio-player/AudioContext';
 import { selectCurrentPlaylist, selectCurrentTrack } from './selectors';
-import { playNextTrack } from 'renderer/slices/music-player-slice';
 
 export default function Footer() {
   const currentTrack = useSelector(selectCurrentTrack);
@@ -19,6 +19,7 @@ export default function Footer() {
     const token = setInterval(() => {
       // eslint-disable-next-line react/destructuring-assignment
       setPosition(player.position);
+      // eslint-disable-next-line react/destructuring-assignment
       console.log(player.position);
     }, 500);
 
