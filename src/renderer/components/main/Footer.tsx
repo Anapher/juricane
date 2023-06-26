@@ -19,8 +19,6 @@ export default function Footer() {
     const token = setInterval(() => {
       // eslint-disable-next-line react/destructuring-assignment
       setPosition(player.position);
-      // eslint-disable-next-line react/destructuring-assignment
-      console.log(player.position);
     }, 500);
 
     return () => {
@@ -33,7 +31,12 @@ export default function Footer() {
       <LinearProgress
         color="primary"
         variant="determinate"
-        value={(position / (currentTrack?.duration ?? 100)) * 100}
+        value={(position / (player?.duration || 100)) * 100}
+        sx={{
+          '& .MuiLinearProgress-bar': {
+            transition: 'none',
+          },
+        }}
       />
       <Box display="flex" alignItems="center">
         <Box flex={1} display="flex" alignItems="center" m={3}>
@@ -45,7 +48,7 @@ export default function Footer() {
         {currentTrack && (
           <Typography align="center">
             {formatSeconds(Math.floor(position))} /{' '}
-            {formatSeconds(currentTrack?.duration)}
+            {formatSeconds(Math.floor(player?.duration))}
           </Typography>
         )}
         <Box
@@ -55,6 +58,9 @@ export default function Footer() {
           alignItems="center"
         >
           <Button onClick={() => dispatch(playNextTrack())}>Next track</Button>
+          <Button onClick={() => (player.position = player.duration - 10)}>
+            Jump 10 sec before end
+          </Button>
           <Typography sx={{ mr: 3 }} color="GrayText">
             {playlist?.name}
           </Typography>

@@ -72,7 +72,6 @@ export default function buildMusicLibrary(
       previewImageBase64: _.chain(playlist.tracks)
         .map((x) => {
           const t = processedTracks.get(x.path);
-          console.log(t);
 
           return t && t > -1 && tracks[t].imageBase64;
         })

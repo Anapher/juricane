@@ -28,7 +28,9 @@ startAppListening({
     if (state.musicPlayer.waitlist.length > 0) {
       api.dispatch(setCurrentTrack(state.musicPlayer.waitlist[0]));
     } else {
-      const list = state.musicPlayer.currentPlaylist?.tracks;
+      const list = state.musicPlayer.currentPlaylist?.tracks.filter(
+        (x) => x.url !== state.musicPlayer.currentTrack?.url
+      );
       if (!list) return;
 
       const nextTrack = drawRandomItem(list);
