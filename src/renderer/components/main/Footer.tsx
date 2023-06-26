@@ -26,6 +26,10 @@ export default function Footer() {
     };
   }, [player, setPosition]);
 
+  const debugSeekUntilEnd = () => {
+    player.position = player.duration - 10;
+  };
+
   return (
     <Box>
       <LinearProgress
@@ -58,7 +62,7 @@ export default function Footer() {
           alignItems="center"
         >
           <Button onClick={() => dispatch(playNextTrack())}>Next track</Button>
-          <Button onClick={() => (player.position = player.duration - 10)}>
+          <Button onClick={() => debugSeekUntilEnd()}>
             Jump 10 sec before end
           </Button>
           <Typography sx={{ mr: 3 }} color="GrayText">
