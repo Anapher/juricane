@@ -1,26 +1,36 @@
 import { useQuery } from 'react-query';
-import { useSelector } from 'react-redux';
-import { RootState } from './store';
 
-export const useMusicLibrary = () => {
-  const libraryPath = useSelector(
-    (state: RootState) => state.musicPlayer.libraryPath
-  );
-
+export const useConfig = () => {
   return useQuery(
-    ['musicLibrary', libraryPath],
+    ['config'],
     () => {
-      if (!libraryPath) {
-        throw new Error('library path is empty');
-      }
-
-      return window.electron.ipcRenderer.loadMusicLibrary(libraryPath);
+      return window.electron.ipcRenderer.loadConfig();
     },
     {
       refetchOnMount: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
-      enabled: !!libraryPath,
+    }
+  );
+};
+
+export const useMusicLibrary = () => {
+  const { data: config } = useConfig();
+
+  return useQuery(
+    ['musicLibrary', config],
+    () => {
+      if (!config) {
+        throw new Error('no config');
+      }
+
+      return window.electron.ipcRenderer.loadMusicLibrary(config);
+    },
+    {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      enabled: !!config,
     }
   );
 };

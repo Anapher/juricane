@@ -8,42 +8,78 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import { BrowserWindow, app, ipcMain, shell, dialog } from 'electron';
+import Config from 'config';
+import { BrowserWindow, app, dialog, ipcMain, shell } from 'electron';
+import fs from 'fs/promises';
 import path from 'path';
+import { MusicLibrary, TrackDb } from 'renderer/types';
+import buildTrackDb, { loadTrackDb } from './db-builder/track-db-builder';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
-import loadAllPlaylistsFromDirectory from './playlist-loader/playlist-loader';
-import buildMusicLibrary from './playlist-loader/music-library';
+import loadAllPlaylistsFromDirectory, {
+  createCategoryInfoForPlaylists,
+} from './playlist-loader/playlist-loader';
+import { resolveHtmlPath } from './utils';
+// import buildTrackDb from './db-builder/track-db-builder';
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.handle('dialog:openPlaylistDirectory', async () => {
-  if (isDebug) {
-    return '/Users/vgriebel/Documents/github/juricane/test_music/Playlisten';
+// const config = app.commandLine.getSwitchValue('config') || 'config.yaml';
+
+// const buildDb =
+//   app.commandLine.getSwitchValue('builddb') ||
+//   '/Users/vgriebel/Documents/github/juricane';
+// if (buildDb) {
+//   console.log('Build track database');
+//   buildTrackDb(buildDb);
+//   app.exit(0);
+// }
+
+ipcMain.handle('dialog:loadConfig', async () => {
+  const filename = app.commandLine.getSwitchValue('config') || 'config.json';
+
+  let config: string;
+  try {
+    config = await fs.readFile(filename, 'utf8');
+  } catch (error) {
+    const result = await dialog.showOpenDialog(mainWindow!, {
+      properties: ['openFile'],
+      title: 'Bitte öffne die config.json Datei',
+    });
+
+    if (result.canceled) return null;
+
+    config = await fs.readFile(result.filePaths[0], 'utf8');
   }
-  const result = await dialog.showOpenDialog(mainWindow!, {
-    properties: ['openDirectory'],
-    title: 'Bitte öffne den Ordner mit den Playlist-Dateien',
-  });
 
-  if (result.canceled) return null;
-
-  return result.filePaths[0];
+  return JSON.parse(config);
 });
 
-ipcMain.handle('files:loadLibrary', async (event, directory: string) => {
-  const playlists = await loadAllPlaylistsFromDirectory(directory);
-  const library = buildMusicLibrary(playlists);
+ipcMain.handle(
+  'files:loadLibrary',
+  async (event, config: Config): Promise<MusicLibrary> => {
+    let trackDb: TrackDb;
+    try {
+      trackDb = await loadTrackDb(config.trackDirectory);
+    } catch (error) {
+      await buildTrackDb(config.trackDirectory);
+      trackDb = await loadTrackDb(config.trackDirectory);
+    }
 
-  await new Promise((resolve) => {
-    setTimeout(resolve, 1500);
-  });
+    const playlists = await loadAllPlaylistsFromDirectory(
+      config.playlistDirectory
+    );
 
-  return library;
-});
+    const playlistsMerged = createCategoryInfoForPlaylists(
+      playlists,
+      trackDb,
+      config.trackDirectory
+    );
+    return { ...trackDb, playlists: playlistsMerged };
+  }
+);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

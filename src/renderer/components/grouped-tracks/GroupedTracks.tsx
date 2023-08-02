@@ -31,7 +31,7 @@ export default function GroupedTracks({ groups, onNavigateToGroup }: Props) {
           <Card sx={{ flex: 1, minHeight: 0 }}>
             <CardActionArea onClick={() => onNavigateToGroup(group)}>
               <CardMedia>
-                <TrackListPreview images={group.previewImageBase64} />
+                <TrackListPreview images={group.previewImageTrackIds} />
               </CardMedia>
               <CardContent>
                 <Typography

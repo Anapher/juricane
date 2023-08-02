@@ -50,8 +50,6 @@ function AppRoutes() {
 
   const audioPlayer = useAudioPlayer();
 
-  console.log(data?.playlists);
-
   if (!isFetched) {
     return <NotLoadedScreen />;
   }

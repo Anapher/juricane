@@ -1,5 +1,6 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
+import Config from 'config';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { MusicLibrary } from 'renderer/types';
 
@@ -22,11 +23,11 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    openPlaylistDirectory(): Promise<string | null> {
-      return ipcRenderer.invoke('dialog:openPlaylistDirectory');
+    loadConfig(): Promise<Config | null> {
+      return ipcRenderer.invoke('dialog:loadConfig');
     },
-    loadMusicLibrary(directory: string): Promise<MusicLibrary> {
-      return ipcRenderer.invoke('files:loadLibrary', directory);
+    loadMusicLibrary(config: Config): Promise<MusicLibrary> {
+      return ipcRenderer.invoke('files:loadLibrary', config);
     },
   },
 };
