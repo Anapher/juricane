@@ -21,6 +21,14 @@ const initialState: MusicPlayerState = {
   libraryPath: null,
 };
 
+const reorder = (list: Track[], startIndex: number, endIndex: number) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
 export const musicPlayerSlice = createSlice({
   name: 'musicPlayer',
   initialState,
@@ -44,6 +52,14 @@ export const musicPlayerSlice = createSlice({
     removeFromWaitlist(state, { payload }: PayloadAction<number>) {
       state.waitlist = state.waitlist.filter((x) => x.id !== payload);
     },
+    waitlistReorder(
+      state,
+      {
+        payload: { startIndex, endIndex },
+      }: PayloadAction<{ startIndex: number; endIndex: number }>
+    ) {
+      state.waitlist = reorder(state.waitlist, startIndex, endIndex);
+    },
   },
 });
 
@@ -55,6 +71,7 @@ export const {
   setCurrentPlaylist,
   setCurrentTrack,
   removeFromWaitlist,
+  waitlistReorder,
 } = musicPlayerSlice.actions;
 
 export default musicPlayerSlice.reducer;

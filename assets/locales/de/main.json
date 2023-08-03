@@ -17,7 +17,6 @@
     },
     "queue": {
       "no": "No",
-      "cover": "Cover",
       "artist": "Künstler",
       "title": "Titel",
       "length": "Länge",
