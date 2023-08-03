@@ -2,7 +2,7 @@
   "name": "asdrtyrty",
   "components": {
     "not_loaded": {
-      "text": "Please open a folder which contains playlist files (m3us)",
+      "text": "Loading track database...",
       "button_text": "Open playlist folder"
     },
     "track_list": {

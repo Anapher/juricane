@@ -50,6 +50,10 @@ function generateMusicLibraryCategories(
 
 export default async function buildTrackDb(dir: string): Promise<void> {
   const trackFiles = await glob(`${dir.replaceAll(path.sep, '/')}/**/*.mp3`);
+  // trackFiles = Array.from({ length: 20000 }).map(
+  //   (x, i) => trackFiles[i % trackFiles.length]
+  // );
+
   const tracksImageDir = `${dir.replaceAll(path.sep, '/')}/${TRACK_IMAGES_DIR}`;
   try {
     await fs.mkdir(tracksImageDir);
@@ -81,17 +85,6 @@ export default async function buildTrackDb(dir: string): Promise<void> {
       console.error(error);
     }
   }
-
-  // const tracks = Array.from({ length: 50000 }).map<Track>((__, id) => ({
-  //   id,
-  //   album: 'Whitney',
-  //   artist: 'Whitney Houston',
-  //   genre: 'Dance',
-  //   title: 'I Wanna Dance With Somebody (Who Loves Me)',
-  //   year: 1987,
-  //   url: '/Users/vgriebel/Documents/github/juricane/test_music/Musik/Album_2/The White Stripes - Seven Nation Army.mp3',
-  //   duration: 231,
-  // }));
 
   const db: TrackDb = { tracks, ...generateMusicLibraryCategories(tracks) };
   await fs.writeFile(`${dir}/${TRACK_DB_FILE_NAME}`, JSON.stringify(db));
