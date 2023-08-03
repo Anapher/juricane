@@ -13,6 +13,7 @@ import { useConfig } from 'renderer/app/queries';
 import { formatSeconds } from 'renderer/utils/duration';
 import TrackImage from '../tracks/TrackImage';
 import { selectQueueTracks } from './selectors';
+import CurrentTrackCover from './CurrentTrackCover';
 
 export default function Queue() {
   const queueTracks = useSelector(selectQueueTracks);
@@ -23,7 +24,9 @@ export default function Queue() {
 
   return (
     <Box sx={{ flex: 2, display: 'flex', flexDirection: 'row' }}>
-      <Box sx={{ flex: 1 }} />
+      <Box sx={{ flex: 1, display: 'flex' }}>
+        <CurrentTrackCover />
+      </Box>
       <Box sx={{ flex: 1, p: 3, display: 'flex', maxWidth: 800 }}>
         <Paper sx={{ p: 1, borderRadius: 2, flex: 1 }}>
           <Table>
