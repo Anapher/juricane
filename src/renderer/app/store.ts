@@ -4,12 +4,14 @@ import {
   createListenerMiddleware,
 } from '@reduxjs/toolkit';
 import musicPlayer from '../slices/music-player-slice';
+import admin from '../slices/admin-slice';
 
 const listenerMiddleware = createListenerMiddleware();
 
 export const store = configureStore({
   reducer: {
     musicPlayer,
+    admin,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(listenerMiddleware.middleware),

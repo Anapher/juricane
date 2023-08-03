@@ -1,4 +1,5 @@
 {
   "playlistDirectory": "/Users/vgriebel/Documents/github/juricane/test_music/Playlisten",
-  "trackDirectory": "/Users/vgriebel/Documents/github/juricane/test_music"
+  "trackDirectory": "/Users/vgriebel/Documents/github/juricane/test_music",
+  "adminPassword": "test"
 }

@@ -5,3 +5,5 @@ export const selectCurrentTrack = (state: RootState) =>
 
 export const selectCurrentPlaylist = (state: RootState) =>
   state.musicPlayer.currentPlaylist;
+
+export const selectAdminMode = (state: RootState) => state.admin.adminMode;
