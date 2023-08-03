@@ -5,6 +5,7 @@ import { playNextTrack } from 'renderer/slices/music-player-slice';
 import { formatSeconds } from 'renderer/utils/duration';
 import AudioPlayerContext from '../audio-player/AudioContext';
 import { selectCurrentPlaylist, selectCurrentTrack } from './selectors';
+import TrackImage from '../tracks/TrackImage';
 
 export default function Footer() {
   const currentTrack = useSelector(selectCurrentTrack);
@@ -44,10 +45,11 @@ export default function Footer() {
       />
       <Box display="flex" alignItems="center">
         <Box flex={1} display="flex" alignItems="center" m={3}>
-          <div>
+          {currentTrack && <TrackImage size={56} track={currentTrack} />}
+          <Box ml={2}>
             <Typography>{currentTrack?.title}</Typography>
             <Typography variant="caption">{currentTrack?.artist}</Typography>
-          </div>
+          </Box>
         </Box>
         {currentTrack && (
           <Typography align="center">

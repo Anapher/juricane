@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import AddIcon from '@mui/icons-material/Add';
+import CheckIcon from '@mui/icons-material/Check';
 import {
+  Box,
   Chip,
   Fab,
   Paper,
@@ -12,13 +14,14 @@ import {
   TableRow,
   useTheme,
 } from '@mui/material';
+import { TFunction } from 'i18next';
 import _ from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { TableComponents, TableVirtuoso } from 'react-virtuoso';
 import { Track } from 'renderer/types';
 import { formatSeconds } from 'renderer/utils/duration';
-import CheckIcon from '@mui/icons-material/Check';
+import TrackImage from '../tracks/TrackImage';
 
 export type ColumnName = 'title' | 'artist' | 'duration' | 'album' | 'genre';
 
@@ -30,6 +33,7 @@ export type TrackNavigationRoute = {
 export type ConfigProps = {
   hiddenColumns?: ColumnName[];
   queuedTracks: number[];
+  currentlyPlaying: number | undefined;
   onAddToQueue: (track: Track) => void;
   onNavigate: (route: TrackNavigationRoute) => void;
 };
@@ -67,11 +71,6 @@ function renderActionCell(
 }
 
 const columns: Column[] = [
-  {
-    name: 'title',
-    txName: 'components.track_list.title',
-    renderContent: (track) => track.title,
-  },
   {
     name: 'artist',
     txName: 'components.track_list.artist',
@@ -121,6 +120,9 @@ function createFixedHeaderContent({ hiddenColumns }: ConfigProps) {
           variant="head"
           style={{ width: 140, backgroundColor: bgColor }}
         />
+        <TableCell variant="head" style={{ backgroundColor: bgColor }}>
+          {t('components.track_list.title')}
+        </TableCell>
         {columns
           .filter((x) => !hiddenColumns?.includes(x.name))
           .map(({ name, txName, width, offsetHeader }) => (
@@ -163,10 +165,29 @@ const VirtuosoTableComponents: TableComponents<Track> = {
 function rowContent(
   _index: number,
   row: Track,
-  { hiddenColumns, onAddToQueue, onNavigate, queuedTracks }: ConfigProps
+  {
+    hiddenColumns,
+    onAddToQueue,
+    onNavigate,
+    queuedTracks,
+    currentlyPlaying,
+  }: ConfigProps,
+  t: TFunction
 ) {
   const queuePosition = _.indexOf(queuedTracks, row.id);
   const queued = queuePosition > -1;
+  const playing = currentlyPlaying === row.id;
+  const buttonText = (() => {
+    if (queued) {
+      return `${t('components.track_list.pos')} ${queuePosition + 1}`;
+    }
+
+    if (playing) {
+      return t('components.track_list.playing');
+    }
+
+    return t('components.track_list.waitlist');
+  })();
 
   return (
     <>
@@ -178,13 +199,18 @@ function rowContent(
           color="primary"
           aria-label="add to waitlist"
           sx={{ zIndex: 0, width: 120 }}
-          disabled={queued}
+          disabled={queued || playing}
         >
           {queued ? <CheckIcon sx={{ mr: 1 }} /> : <AddIcon sx={{ mr: 1 }} />}
-          <span style={{ flex: 1, textAlign: 'left' }}>
-            {queued ? `Pos. ${queuePosition + 1}` : 'Waitlist'}
-          </span>
+          <span style={{ flex: 1, textAlign: 'left' }}>{buttonText}</span>
         </Fab>
+      </TableCell>
+
+      <TableCell>
+        <Box display="flex" alignItems="center">
+          <TrackImage size={48} track={row} forceSize />
+          <Box ml={2}>{row.title}</Box>
+        </Box>
       </TableCell>
 
       {columns
@@ -198,13 +224,14 @@ function rowContent(
 
 export default function TracksTable({ tracks, ...configProps }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <TableVirtuoso
       data={tracks}
       components={VirtuosoTableComponents}
       fixedHeaderContent={createFixedHeaderContent(configProps)}
-      itemContent={(index, data) => rowContent(index, data, configProps)}
+      itemContent={(index, data) => rowContent(index, data, configProps, t)}
       style={{ borderRadius: theme.shape.borderRadius * 2 }}
     />
   );

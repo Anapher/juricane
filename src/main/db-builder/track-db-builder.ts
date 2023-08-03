@@ -77,6 +77,7 @@ export default async function buildTrackDb(dir: string): Promise<void> {
       tracks.push(track);
     } catch (error) {
       // ignore
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   }

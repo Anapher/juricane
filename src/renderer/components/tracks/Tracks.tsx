@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { addToWaitlist } from 'renderer/slices/music-player-slice';
 import { Track } from 'renderer/types';
 import TracksTable, { ColumnName } from '../grouped-tracks/TracksTable';
+import { selectCurrentTrack } from '../main/selectors';
 import { selectQueueTracks } from '../queue/selectors';
 
 type Props = {
@@ -15,6 +16,7 @@ export default function Tracks({ tracks, hiddenColumn }: Props) {
   const dispatch = useDispatch();
 
   const queuedTracks = useSelector(selectQueueTracks).map((x) => x.id);
+  const currentTrackId = useSelector(selectCurrentTrack)?.id;
 
   return (
     <TracksTable
@@ -25,6 +27,7 @@ export default function Tracks({ tracks, hiddenColumn }: Props) {
       }
       onAddToQueue={(track) => dispatch(addToWaitlist(track))}
       hiddenColumns={hiddenColumn && [hiddenColumn]}
+      currentlyPlaying={currentTrackId}
     />
   );
 }

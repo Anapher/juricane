@@ -10,7 +10,17 @@
       "artist": "Artist",
       "duration": "Duration",
       "album": "Album",
-      "genre": "Genre"
+      "genre": "Genre",
+      "pos": "Pos.",
+      "playing": "Playing",
+      "waitlist": "Waitlist"
+    },
+    "queue": {
+      "no": "No",
+      "cover": "Cover",
+      "artist": "Künstler",
+      "title": "Titel",
+      "length": "Länge"
     }
   }
 }
