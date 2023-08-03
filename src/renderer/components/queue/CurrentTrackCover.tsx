@@ -19,9 +19,9 @@ export default function CurrentTrackCover() {
         display="flex"
         alignItems="center"
         flexDirection="column"
-        sx={{ maxWidth: 600 }}
+        sx={{ maxWidth: 600, p: 3 }}
       >
-        <TrackImage size={256} track={currentTrack} />
+        <TrackImage size={200} track={currentTrack} />
         <Typography variant="h5" align="center" sx={{ mt: 2 }}>
           {currentTrack.title}
         </Typography>
