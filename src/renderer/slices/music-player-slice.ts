@@ -41,6 +41,9 @@ export const musicPlayerSlice = createSlice({
     setCurrentPlaylist(state, { payload }: PayloadAction<CurrentPlaylist>) {
       state.currentPlaylist = payload;
     },
+    removeFromWaitlist(state, { payload }: PayloadAction<number>) {
+      state.waitlist = state.waitlist.filter((x) => x.id !== payload);
+    },
   },
 });
 
@@ -51,6 +54,7 @@ export const {
   addToWaitlist,
   setCurrentPlaylist,
   setCurrentTrack,
+  removeFromWaitlist,
 } = musicPlayerSlice.actions;
 
 export default musicPlayerSlice.reducer;

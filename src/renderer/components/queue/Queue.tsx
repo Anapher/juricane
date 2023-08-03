@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Paper,
   Table,
   TableBody,
@@ -8,17 +9,26 @@ import {
   TableRow,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useConfig } from 'renderer/app/queries';
+import { removeFromWaitlist } from 'renderer/slices/music-player-slice';
+import { Track } from 'renderer/types';
 import { formatSeconds } from 'renderer/utils/duration';
+import { selectAdminMode } from '../main/selectors';
 import TrackImage from '../tracks/TrackImage';
-import { selectQueueTracks } from './selectors';
 import CurrentTrackCover from './CurrentTrackCover';
+import { selectQueueTracks } from './selectors';
 
 export default function Queue() {
   const queueTracks = useSelector(selectQueueTracks);
   const { data: config } = useConfig();
   const { t } = useTranslation();
+  const adminMode = useSelector(selectAdminMode);
+  const dispatch = useDispatch();
+
+  const handleRemoveFromQueue = (track: Track) => {
+    dispatch(removeFromWaitlist(track.id));
+  };
 
   if (!config) return null;
 
@@ -37,6 +47,7 @@ export default function Queue() {
                 <TableCell>{t('components.queue.artist')}</TableCell>
                 <TableCell>{t('components.queue.title')}</TableCell>
                 <TableCell>{t('components.queue.length')}</TableCell>
+                {adminMode && <TableCell />}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -49,6 +60,13 @@ export default function Queue() {
                   <TableCell>{x.artist}</TableCell>
                   <TableCell>{x.title}</TableCell>
                   <TableCell>{formatSeconds(x.duration)}</TableCell>
+                  {adminMode && (
+                    <TableCell>
+                      <Button onClick={() => handleRemoveFromQueue(x)}>
+                        {t('components.queue.remove')}
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
