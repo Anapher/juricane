@@ -19,7 +19,6 @@ import loadAllPlaylistsFromDirectory, {
   createCategoryInfoForPlaylists,
 } from './playlist-loader/playlist-loader';
 import { resolveHtmlPath } from './utils';
-// import buildTrackDb from './db-builder/track-db-builder';
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
