@@ -47,6 +47,7 @@ export default class HowlWrapper extends TypedEmitter<HowlWrapperEvents> {
 
   public dispose() {
     clearTimeout(this.currentFadingOutCleanupTimeout);
+    clearTimeout(this.onCrossfadeOutRequestTimeout);
     this.howl.unload();
   }
 
