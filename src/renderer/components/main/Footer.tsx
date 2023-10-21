@@ -1,12 +1,12 @@
 import { Box, Button, LinearProgress, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useConfig } from 'renderer/app/queries';
 import { playNextTrack } from 'renderer/slices/music-player-slice';
 import { formatSeconds } from 'renderer/utils/duration';
 import AudioPlayerContext from '../audio-player/AudioContext';
-import { selectCurrentPlaylist, selectCurrentTrack } from './selectors';
 import TrackImage from '../tracks/TrackImage';
-import { useConfig } from 'renderer/app/queries';
+import { selectCurrentPlaylist, selectCurrentTrack } from './selectors';
 
 export default function Footer() {
   const currentTrack = useSelector(selectCurrentTrack);
@@ -28,10 +28,6 @@ export default function Footer() {
       clearInterval(token);
     };
   }, [player, setPosition]);
-
-  const debugSeekUntilEnd = () => {
-    player.position = player.duration - 10;
-  };
 
   return (
     <Box>
@@ -77,9 +73,6 @@ export default function Footer() {
               Play / Pause
             </Button>
           )}
-          {/* <Button onClick={() => debugSeekUntilEnd()}>
-            Jump 10 sec before end
-          </Button> */}
           <Typography sx={{ mr: 3 }} color="GrayText">
             {playlist?.name}
           </Typography>
