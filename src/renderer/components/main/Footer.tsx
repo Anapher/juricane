@@ -6,11 +6,13 @@ import { formatSeconds } from 'renderer/utils/duration';
 import AudioPlayerContext from '../audio-player/AudioContext';
 import { selectCurrentPlaylist, selectCurrentTrack } from './selectors';
 import TrackImage from '../tracks/TrackImage';
+import { useConfig } from 'renderer/app/queries';
 
 export default function Footer() {
   const currentTrack = useSelector(selectCurrentTrack);
   const playlist = useSelector(selectCurrentPlaylist);
   const dispatch = useDispatch();
+  const { data: config } = useConfig();
 
   const [position, setPosition] = useState(0);
 
@@ -63,10 +65,21 @@ export default function Footer() {
           justifyContent="flex-end"
           alignItems="center"
         >
-          <Button onClick={() => dispatch(playNextTrack())}>Next track</Button>
-          <Button onClick={() => debugSeekUntilEnd()}>
+          {config?.showNextTrackButton && (
+            <Button onClick={() => dispatch(playNextTrack())}>
+              Song überspringen
+            </Button>
+          )}
+          {config?.showPlayButton && (
+            <Button
+              onClick={() => (player.playing ? player.pause() : player.play())}
+            >
+              Play / Pause
+            </Button>
+          )}
+          {/* <Button onClick={() => debugSeekUntilEnd()}>
             Jump 10 sec before end
-          </Button>
+          </Button> */}
           <Typography sx={{ mr: 3 }} color="GrayText">
             {playlist?.name}
           </Typography>
