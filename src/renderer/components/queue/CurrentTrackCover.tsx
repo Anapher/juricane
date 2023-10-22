@@ -25,7 +25,7 @@ export default function CurrentTrackCover() {
         <Typography variant="h5" align="center" sx={{ mt: 2 }}>
           {currentTrack.title}
         </Typography>
-        <Typography sx={{ mt: 1 }}>{currentTrack.artist}</Typography>
+        <Typography sx={{ mt: 1 }}>{currentTrack.artist.join(', ')}</Typography>
       </Box>
     </Box>
   );

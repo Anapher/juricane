@@ -105,7 +105,7 @@ export default function Queue() {
                                 <span>{x.title}</span>
                               </Stack>
                             </TableCell>
-                            <TableCell>{x.artist}</TableCell>
+                            <TableCell>{x.artist.join(', ')}</TableCell>
                             <TableCell>{formatSeconds(x.duration)}</TableCell>
                             {adminMode && (
                               <TableCell>

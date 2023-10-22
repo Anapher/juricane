@@ -46,7 +46,9 @@ export default function Footer() {
           {currentTrack && <TrackImage size={56} track={currentTrack} />}
           <Box ml={2}>
             <Typography>{currentTrack?.title}</Typography>
-            <Typography variant="caption">{currentTrack?.artist}</Typography>
+            <Typography variant="caption">
+              {currentTrack?.artist.join(', ')}
+            </Typography>
           </Box>
         </Box>
         {currentTrack && (

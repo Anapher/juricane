@@ -53,10 +53,12 @@ type Column = {
   width?: number;
 };
 
-function renderActionCell(
-  text: string | null | undefined,
-  onClick: () => void
-) {
+type ActionCellProps = {
+  text: string | null | undefined;
+  onClick: () => void;
+};
+
+function ActionCell({ text, onClick }: ActionCellProps) {
   if (!text) {
     return null;
   }
@@ -74,28 +76,39 @@ const columns: Column[] = [
   {
     name: 'artist',
     txName: 'components.track_list.artist',
-    renderContent: (track, onNavigate) =>
-      renderActionCell(track.artist, () =>
-        onNavigate({ type: 'artists', name: track.artist! })
-      ),
+    renderContent: (track, onNavigate) => (
+      <>
+        {track.artist.map((x) => (
+          <ActionCell
+            key={x}
+            text={x}
+            onClick={() => onNavigate({ type: 'artists', name: x })}
+          />
+        ))}
+      </>
+    ),
     offsetHeader: true,
   },
   {
     name: 'album',
     txName: 'components.track_list.album',
-    renderContent: (track, onNavigate) =>
-      renderActionCell(track.album, () =>
-        onNavigate({ type: 'albums', name: track.album! })
-      ),
+    renderContent: (track, onNavigate) => (
+      <ActionCell
+        text={track.album}
+        onClick={() => onNavigate({ type: 'albums', name: track.album! })}
+      />
+    ),
     offsetHeader: true,
   },
   {
     name: 'genre',
     txName: 'components.track_list.genre',
-    renderContent: (track, onNavigate) =>
-      renderActionCell(track.genre, () =>
-        onNavigate({ type: 'genres', name: track.genre! })
-      ),
+    renderContent: (track, onNavigate) => (
+      <ActionCell
+        text={track.genre}
+        onClick={() => onNavigate({ type: 'genres', name: track.genre! })}
+      />
+    ),
     width: 160,
     offsetHeader: true,
   },

@@ -5,7 +5,7 @@ export type Track = {
   duration: number;
 
   hasImage: boolean;
-  artist?: string;
+  artist: string[];
   genre?: string;
   year?: number;
   album?: string;

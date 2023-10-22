@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import _ from 'lodash';
 import { useMemo, useState } from 'react';
 import { useMusicLibrary } from 'renderer/app/queries';
 import { Track } from 'renderer/types';
@@ -16,11 +17,15 @@ function useFilteredTracks(tracks: Track[] | undefined, searchText: string) {
       return tracks;
     }
 
-    return tracks.filter((x) => {
-      if (x.title.toUpperCase().includes(normalizedSearchText)) {
+    return tracks.filter((track) => {
+      if (track.title.toUpperCase().includes(normalizedSearchText)) {
         return true;
       }
-      if (x.artist?.toUpperCase().includes(normalizedSearchText)) {
+      if (
+        _.some(track.artist, (x) =>
+          x.toUpperCase().includes(normalizedSearchText)
+        )
+      ) {
         return true;
       }
 
