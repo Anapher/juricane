@@ -14,11 +14,13 @@ type Props = {
     id: string
   ) => CategoryInfo | undefined;
   hiddenColumn?: ColumnName;
+  playlist?: boolean;
 };
 
 export default function CategoryTracksPage({
   selectCategoryInfo,
   hiddenColumn,
+  playlist,
 }: Props) {
   const { id } = useParams();
   const library = useMusicLibrary();
@@ -58,13 +60,15 @@ export default function CategoryTracksPage({
         alignItems="center"
       >
         <Typography variant="h6">{data.name}</Typography>
-        <Button
-          disabled={isPlaying}
-          variant="contained"
-          onClick={setPlaylistAsCurrent}
-        >
-          Abspielen
-        </Button>
+        {playlist && (
+          <Button
+            disabled={isPlaying}
+            variant="contained"
+            onClick={setPlaylistAsCurrent}
+          >
+            Abspielen
+          </Button>
+        )}
       </Box>
       <Paper sx={{ flex: 1, mt: 1, borderRadius: 3 }} elevation={6}>
         <Tracks tracks={tracks} hiddenColumn={hiddenColumn} />

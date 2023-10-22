@@ -71,6 +71,7 @@ function AppRoutes() {
                 path=":id"
                 element={
                   <CategoryTracksPage
+                    playlist
                     selectCategoryInfo={(library, id) =>
                       library.playlists[Number(id)]
                     }
