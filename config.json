@@ -4,5 +4,13 @@
   "adminPassword": "test",
   "showNextTrackButton": true,
   "showPlayButton": true,
-  "defaultPlaylistName": "Playlist_Ordner_2"
+  "defaultPlaylistName": "Playlist_Ordner_2",
+  "artistSeparators": [
+    " featuring ",
+    " ft\\. ",
+    " ft ",
+    " feat\\. ",
+    " feat ",
+    " & "
+  ]
 }

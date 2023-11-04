@@ -17,10 +17,30 @@ function generateCategory(
   tracks: Track[],
   property: keyof Track
 ): Record<string, CategoryInfo> {
+  const groups = new Map<string, Track[]>();
+
+  tracks.forEach((track) => {
+    const value = track[property];
+
+    const addTrackToGroup = (group: string) => {
+      let groupTracks = groups.get(group);
+      if (!groupTracks) {
+        groups.set(group, (groupTracks = []));
+      }
+      groupTracks.push(track);
+    };
+
+    if (Array.isArray(value)) {
+      value.forEach((val) => {
+        addTrackToGroup(val);
+      });
+    } else {
+      addTrackToGroup(value as string);
+    }
+  });
+
   return Object.fromEntries(
-    _.chain(tracks)
-      .groupBy(property)
-      .entries()
+    _.chain([...groups.entries()])
       .filter(([name]) => !!name)
       .map<[string, CategoryInfo]>(([name, entries]) => [
         encodeURIComponent(name),
@@ -48,7 +68,10 @@ function generateMusicLibraryCategories(
   };
 }
 
-export default async function buildTrackDb(dir: string): Promise<void> {
+export default async function buildTrackDb(
+  dir: string,
+  artistSeparators: string[]
+): Promise<void> {
   const trackFiles = await glob(`${dir.replaceAll(path.sep, '/')}/**/*.mp3`);
   // trackFiles = Array.from({ length: 20000 }).map(
   //   (x, i) => trackFiles[i % trackFiles.length]
@@ -73,7 +96,11 @@ export default async function buildTrackDb(dir: string): Promise<void> {
   for (const file of trackFiles) {
     try {
       // eslint-disable-next-line no-await-in-loop
-      const [track, image] = await loadMusicTags(file, tracks.length);
+      const [track, image] = await loadMusicTags(
+        file,
+        tracks.length,
+        artistSeparators
+      );
 
       if (image) {
         fs.writeFile(`${tracksImageDir}/${tracks.length}.png`, image);

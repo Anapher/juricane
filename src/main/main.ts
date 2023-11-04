@@ -63,7 +63,7 @@ ipcMain.handle(
     try {
       trackDb = await loadTrackDb(config.trackDirectory);
     } catch (error) {
-      await buildTrackDb(config.trackDirectory);
+      await buildTrackDb(config.trackDirectory, config.artistSeparators);
       trackDb = await loadTrackDb(config.trackDirectory);
     }
 
