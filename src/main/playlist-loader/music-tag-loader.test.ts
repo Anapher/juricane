@@ -19,10 +19,19 @@ const testData = [
   },
 ];
 
+const artistSeparators = [
+  ' featuring ',
+  ' ft\\. ',
+  ' ft ',
+  ' feat\\. ',
+  ' feat ',
+  ' & ',
+];
+
 describe('split artists', () => {
   testData.forEach((data) => {
     it(`Split ${data.artist} correctly`, () => {
-      const actual = splitArtist(data.artist);
+      const actual = splitArtist(data.artist, artistSeparators);
       expect(actual).toEqual(data.expected);
     });
   });
