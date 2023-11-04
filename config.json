@@ -3,5 +3,6 @@
   "trackDirectory": "/Users/vgriebel/Documents/github/juricane/test_music",
   "adminPassword": "test",
   "showNextTrackButton": true,
-  "showPlayButton": true
+  "showPlayButton": true,
+  "defaultPlaylistName": "Playlist_Ordner_2"
 }
