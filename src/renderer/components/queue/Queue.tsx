@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
-  Button,
+  IconButton,
   Paper,
   Stack,
   Table,
@@ -9,6 +10,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
 } from '@mui/material';
 import {
   DragDropContext,
@@ -109,11 +111,13 @@ export default function Queue() {
                             <TableCell>{formatSeconds(x.duration)}</TableCell>
                             {adminMode && (
                               <TableCell>
-                                <Button
-                                  onClick={() => handleRemoveFromQueue(x)}
-                                >
-                                  {t('components.queue.remove')}
-                                </Button>
+                                <Tooltip title={t('components.queue.remove')}>
+                                  <IconButton
+                                    onClick={() => handleRemoveFromQueue(x)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </Tooltip>
                               </TableCell>
                             )}
                           </TableRow>
