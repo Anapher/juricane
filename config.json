@@ -12,5 +12,7 @@
     " feat\\. ",
     " feat ",
     " & "
-  ]
+  ],
+  "adminModeTimeoutSeconds": 30,
+  "backToWaitlistTimeoutSeconds": 60
 }

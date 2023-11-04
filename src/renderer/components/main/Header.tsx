@@ -6,10 +6,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useConfig } from 'renderer/app/queries';
 import { toggleAdminMode } from 'renderer/slices/admin-slice';
 import to from 'renderer/utils/to';
 import logo from '../../../../assets/logo.png';
 import AdminKeyDialog from './AdminKeyDialog';
+import UserInteractionTimeoutHandler from './UserInteractionTimeoutHandler';
 import { selectAdminMode } from './selectors';
 
 const tabs = ['Waitlist', 'Playlists', 'Tracks', 'Artists', 'Genres'];
@@ -32,13 +34,18 @@ export default function Header() {
   const { t } = useTranslation();
   const adminMode = useSelector(selectAdminMode);
   const dispatch = useDispatch();
+  const { data: config } = useConfig();
 
-  const handleStartAdminMode = () => {
+  const handleToggleAdminMode = () => {
     if (adminMode) {
       dispatch(toggleAdminMode());
     } else {
       setDialogOpen(true);
     }
+  };
+
+  const navigateBackToWaitlist = () => {
+    navigate(getPathFromTab(tabs[0]));
   };
 
   return (
@@ -51,7 +58,7 @@ export default function Header() {
             src={logo}
             width={200}
             alt="Lienke SounDevices"
-            onDoubleClick={handleStartAdminMode}
+            onDoubleClick={handleToggleAdminMode}
           />
 
           <ButtonGroup
@@ -72,7 +79,7 @@ export default function Header() {
         <Box display="flex" justifyContent="flex-end" sx={{ pr: 2, pt: 2 }}>
           <Button
             sx={{ opacity: adminMode ? 1 : 0.2 }}
-            onClick={handleStartAdminMode}
+            onClick={handleToggleAdminMode}
           >
             {adminMode
               ? t('components.admin_mode.button_text_disable')
@@ -109,6 +116,18 @@ export default function Header() {
         </Box>
       </Box>
       <AdminKeyDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
+      {adminMode && config?.adminModeTimeoutSeconds && (
+        <UserInteractionTimeoutHandler
+          handler={handleToggleAdminMode}
+          timeoutSeconds={config.adminModeTimeoutSeconds}
+        />
+      )}
+      {config?.backToWaitlistTimeoutSeconds && (
+        <UserInteractionTimeoutHandler
+          timeoutSeconds={config.backToWaitlistTimeoutSeconds}
+          handler={navigateBackToWaitlist}
+        />
+      )}
     </HeaderContainer>
   );
 }
