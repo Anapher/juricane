@@ -14,7 +14,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { MusicLibrary, TrackDb } from 'renderer/types';
 import buildTrackDb, { loadTrackDb } from './db-builder/track-db-builder';
-import MenuBuilder from './menu';
 import loadAllPlaylistsFromDirectory, {
   createCategoryInfoForPlaylists,
 } from './playlist-loader/playlist-loader';
@@ -126,6 +125,7 @@ const createWindow = async () => {
         : path.join(__dirname, '../../.erb/dll/preload.js'),
       webSecurity: false,
     },
+    autoHideMenuBar: true,
   });
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -145,8 +145,8 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
+  // const menuBuilder = new MenuBuilder(mainWindow);
+  // menuBuilder.buildMenu();
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
