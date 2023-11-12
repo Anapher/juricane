@@ -101,7 +101,6 @@ function AppRoutes() {
                     selectCategoryInfo={(library, id) =>
                       library.artists[encodeURIComponent(id)]
                     }
-                    hiddenColumn="artist"
                   />
                 }
               />
