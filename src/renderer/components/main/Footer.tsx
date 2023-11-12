@@ -1,4 +1,7 @@
-import { Box, Button, LinearProgress, Typography } from '@mui/material';
+import PauseCircleIcon from '@mui/icons-material/PauseCircle';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import { Box, IconButton, LinearProgress, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useConfig } from 'renderer/app/queries';
@@ -15,6 +18,7 @@ export default function Footer() {
   const { data: config } = useConfig();
 
   const [position, setPosition] = useState(0);
+  const [playing, setPlaying] = useState(false);
 
   const player = useContext(AudioPlayerContext);
 
@@ -22,6 +26,7 @@ export default function Footer() {
     const token = setInterval(() => {
       // eslint-disable-next-line react/destructuring-assignment
       setPosition(player.position);
+      setPlaying(player.playing);
     }, 500);
 
     return () => {
@@ -64,16 +69,21 @@ export default function Footer() {
           alignItems="center"
         >
           {config?.showNextTrackButton && (
-            <Button onClick={() => dispatch(playNextTrack())}>
-              Song überspringen
-            </Button>
-          )}
-          {config?.showPlayButton && (
-            <Button
+            <IconButton
+              size="large"
               onClick={() => (player.playing ? player.pause() : player.play())}
             >
-              Play / Pause
-            </Button>
+              {playing ? (
+                <PauseCircleIcon fontSize="large" />
+              ) : (
+                <PlayCircleIcon fontSize="large" />
+              )}
+            </IconButton>
+          )}
+          {config?.showPlayButton && (
+            <IconButton onClick={() => dispatch(playNextTrack())}>
+              <SkipNextIcon />
+            </IconButton>
           )}
           <Typography sx={{ mr: 3 }} color="GrayText">
             {playlist?.name}
