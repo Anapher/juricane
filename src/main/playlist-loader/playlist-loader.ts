@@ -58,8 +58,10 @@ export function createCategoryInfoForPlaylists(
       .map(([id]) => id)
       .take(4)
       .value(),
-    trackIds: tracks
+    trackIds: _(tracks)
       .map((x) => tracksIndex.get(x.path)?.[0])
-      .filter((x): x is number => x !== undefined),
+      .filter((x): x is number => x !== undefined)
+      .sortBy((x) => db.tracks[x].title)
+      .value(),
   }));
 }

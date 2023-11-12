@@ -47,7 +47,10 @@ function generateCategory(
         {
           id: encodeURIComponent(name),
           name,
-          trackIds: entries.map((x) => x.id),
+          trackIds: _(entries)
+            .orderBy((x) => x.title)
+            .map((x) => x.id)
+            .value(),
           previewImageTrackIds: _.chain(entries)
             .filter((x) => x.hasImage)
             .map((x) => x.id)
@@ -95,15 +98,13 @@ export default async function buildTrackDb(
   // eslint-disable-next-line no-restricted-syntax
   for (const file of trackFiles) {
     try {
+      const id = tracks.length;
+
       // eslint-disable-next-line no-await-in-loop
-      const [track, image] = await loadMusicTags(
-        file,
-        tracks.length,
-        artistSeparators
-      );
+      const [track, image] = await loadMusicTags(file, id, artistSeparators);
 
       if (image) {
-        fs.writeFile(`${tracksImageDir}/${tracks.length}.png`, image);
+        fs.writeFile(`${tracksImageDir}/${id}.png`, image);
       }
       tracks.push(track);
     } catch (error) {

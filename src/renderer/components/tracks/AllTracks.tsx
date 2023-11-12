@@ -38,7 +38,12 @@ export default function AllTracks() {
   const [searchText, setSearchText] = useState('');
 
   const library = useMusicLibrary();
-  const filteredTracks = useFilteredTracks(library.data?.tracks, searchText);
+  const sortedTracks = useMemo(
+    () =>
+      library.data?.tracks && _.sortBy(library.data?.tracks, (x) => x.title),
+    [library.data?.tracks]
+  );
+  const filteredTracks = useFilteredTracks(sortedTracks, searchText);
 
   if (!library.data) return null;
 
