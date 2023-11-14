@@ -1,9 +1,17 @@
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
-import { Box, IconButton, LinearProgress, Typography } from '@mui/material';
+import {
+  Box,
+  Chip,
+  IconButton,
+  LinearProgress,
+  Typography,
+} from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useConfig } from 'renderer/app/queries';
 import { playNextTrack } from 'renderer/slices/music-player-slice';
 import { formatSeconds } from 'renderer/utils/duration';
@@ -21,6 +29,8 @@ export default function Footer() {
   const [playing, setPlaying] = useState(false);
 
   const player = useContext(AudioPlayerContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = setInterval(() => {
@@ -85,9 +95,20 @@ export default function Footer() {
               <SkipNextIcon />
             </IconButton>
           )}
-          <Typography sx={{ mr: 3 }} color="GrayText">
-            {playlist?.name}
-          </Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ mx: 2 }}
+          >
+            <Typography>Es wird gespielt aus</Typography>
+            <Chip
+              sx={{ ml: 1 }}
+              icon={<PlayArrowIcon />}
+              label={playlist?.name}
+              onClick={() => navigate(`/playlists/${playlist?.id}`)}
+            />
+          </Box>
         </Box>
       </Box>
     </Box>
