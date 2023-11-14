@@ -9,7 +9,7 @@ import {
   Routes,
 } from 'react-router-dom';
 import './app/i18n';
-import { useConfig, useMusicLibrary } from './app/queries';
+import { useDefaultPlaylist, useMusicLibrary } from './app/queries';
 import { store } from './app/store';
 import AudioPlayerContext from './components/audio-player/AudioContext';
 import useAudioPlayer from './components/audio-player/useAudioPlayer';
@@ -32,28 +32,20 @@ const queryClient = new QueryClient();
 
 function AppRoutes() {
   const { isFetched, data } = useMusicLibrary();
-  const { data: config } = useConfig();
   const dispatch = useDispatch();
+  const defaultPlaylist = useDefaultPlaylist();
 
   useEffect(() => {
-    if (!data) return;
-
-    let startPlaylist = data.playlists.find(
-      (x) => x.name === config?.defaultPlaylistName
-    );
-    if (!startPlaylist) {
-      // eslint-disable-next-line prefer-destructuring
-      startPlaylist = data.playlists[0];
-    }
+    if (!defaultPlaylist || !data) return;
 
     dispatch(
       setCurrentPlaylist({
-        id: Number(startPlaylist.id),
-        name: startPlaylist.name,
-        tracks: startPlaylist.trackIds.map((x) => data.tracks[x]),
+        id: Number(defaultPlaylist.id),
+        name: defaultPlaylist.name,
+        tracks: defaultPlaylist.trackIds.map((x) => data.tracks[x]),
       })
     );
-  }, [data, dispatch, config]);
+  }, [defaultPlaylist, data, dispatch]);
 
   const audioPlayer = useAudioPlayer();
 

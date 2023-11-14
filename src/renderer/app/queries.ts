@@ -35,4 +35,23 @@ export const useMusicLibrary = () => {
   );
 };
 
+export const useDefaultPlaylist = () => {
+  const { data } = useMusicLibrary();
+  const { data: config } = useConfig();
+
+  if (!data) {
+    return undefined;
+  }
+
+  let defaultPlaylist = data.playlists.find(
+    (x) => x.name === config?.defaultPlaylistName
+  );
+  if (!defaultPlaylist) {
+    // eslint-disable-next-line prefer-destructuring
+    defaultPlaylist = data.playlists[0];
+  }
+
+  return defaultPlaylist;
+};
+
 export default null;

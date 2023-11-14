@@ -1,7 +1,9 @@
-import { Box, Button, Paper, Typography } from '@mui/material';
+import EjectIcon from '@mui/icons-material/Eject';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { Box, Fab, Paper, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { useMusicLibrary } from 'renderer/app/queries';
+import { useDefaultPlaylist, useMusicLibrary } from 'renderer/app/queries';
 import { RootState } from 'renderer/app/store';
 import { setCurrentPlaylist } from 'renderer/slices/music-player-slice';
 import { CategoryInfo, MusicLibrary } from 'renderer/types';
@@ -25,6 +27,8 @@ export default function CategoryTracksPage({
   const { id } = useParams();
   const library = useMusicLibrary();
   const dispatch = useDispatch();
+  const defaultPlaylist = useDefaultPlaylist();
+
   const currentPlaylist = useSelector(
     (state: RootState) => state.musicPlayer.currentPlaylist
   );
@@ -49,7 +53,21 @@ export default function CategoryTracksPage({
     );
   };
 
+  const resetToDefaultPlaylist = () => {
+    if (!defaultPlaylist) {
+      return;
+    }
+    dispatch(
+      setCurrentPlaylist({
+        id: Number(defaultPlaylist.id),
+        name: defaultPlaylist.name,
+        tracks: defaultPlaylist.trackIds.map((x) => library.data.tracks[x]),
+      })
+    );
+  };
+
   const isPlaying = currentPlaylist?.id === Number(data.id);
+  const isDefaultPlaylist = defaultPlaylist?.id === data.id;
 
   return (
     <Box flex={1} display="flex" m={2} flexDirection="column">
@@ -59,15 +77,35 @@ export default function CategoryTracksPage({
         justifyContent="space-between"
         alignItems="center"
       >
-        <Typography variant="h6">{data.name}</Typography>
+        <Box display="flex" alignItems="center">
+          {isPlaying && <PlayArrowIcon fontSize="small" sx={{ mr: 1 }} />}
+          <Typography variant="h6" align="center">
+            {data.name}
+          </Typography>
+        </Box>
         {playlist && (
-          <Button
-            disabled={isPlaying}
-            variant="contained"
-            onClick={setPlaylistAsCurrent}
-          >
-            Abspielen
-          </Button>
+          <Box position="relative">
+            {isPlaying ? (
+              <Fab
+                color="primary"
+                disabled={isDefaultPlaylist}
+                aria-label="play default playlist"
+                onClick={resetToDefaultPlaylist}
+                sx={{ position: 'absolute', right: 16, top: 0 }}
+              >
+                <EjectIcon />
+              </Fab>
+            ) : (
+              <Fab
+                color="primary"
+                aria-label="play"
+                onClick={setPlaylistAsCurrent}
+                sx={{ position: 'absolute', right: 16, top: 0 }}
+              >
+                <PlayArrowIcon />
+              </Fab>
+            )}
+          </Box>
         )}
       </Box>
       <Paper sx={{ flex: 1, mt: 1, borderRadius: 3 }} elevation={6}>
