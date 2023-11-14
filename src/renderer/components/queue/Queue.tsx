@@ -2,6 +2,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
+  Chip,
   IconButton,
   Paper,
   Stack,
@@ -20,13 +21,13 @@ import {
 } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useConfig } from 'renderer/app/queries';
 import {
   removeFromWaitlist,
   waitlistReorder,
 } from 'renderer/slices/music-player-slice';
 import { Track } from 'renderer/types';
-import { formatSeconds } from 'renderer/utils/duration';
 import { selectAdminMode } from '../main/selectors';
 import TrackImage from '../tracks/TrackImage';
 import CurrentTrackCover from './CurrentTrackCover';
@@ -38,6 +39,7 @@ export default function Queue() {
   const { t } = useTranslation();
   const adminMode = useSelector(selectAdminMode);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleRemoveFromQueue = (track: Track) => {
     dispatch(removeFromWaitlist(track.id));
@@ -73,7 +75,6 @@ export default function Queue() {
                   <TableCell>{t('components.queue.no')}</TableCell>
                   <TableCell>{t('components.queue.title')}</TableCell>
                   <TableCell>{t('components.queue.artist')}</TableCell>
-                  <TableCell>{t('components.queue.length')}</TableCell>
                   {adminMode && <TableCell />}
                 </TableRow>
               </TableHead>
@@ -107,8 +108,23 @@ export default function Queue() {
                                 <span>{x.title}</span>
                               </Stack>
                             </TableCell>
-                            <TableCell>{x.artist.join(', ')}</TableCell>
-                            <TableCell>{formatSeconds(x.duration)}</TableCell>
+                            <TableCell>
+                              {x.artist.map((artist) => (
+                                <Chip
+                                  key={artist}
+                                  label={artist}
+                                  onClick={() =>
+                                    navigate(
+                                      `/artists/${encodeURIComponent(artist)}`
+                                    )
+                                  }
+                                  sx={{
+                                    backgroundColor:
+                                      'rgba(255, 255, 255, 0.03)',
+                                  }}
+                                />
+                              ))}
+                            </TableCell>
                             {adminMode && (
                               <TableCell>
                                 <Tooltip title={t('components.queue.remove')}>
