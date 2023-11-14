@@ -20,7 +20,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { TableComponents, TableVirtuoso } from 'react-virtuoso';
 import { Track } from 'renderer/types';
-import { formatSeconds } from 'renderer/utils/duration';
 import TrackImage from '../tracks/TrackImage';
 
 export type ColumnName = 'title' | 'artist' | 'duration' | 'album' | 'genre';
@@ -112,13 +111,13 @@ const columns: Column[] = [
     width: 160,
     offsetHeader: true,
   },
-  {
-    name: 'duration',
-    txName: 'components.track_list.duration',
-    renderContent: (track) => formatSeconds(track.duration),
-    width: 160,
-    offsetHeader: true,
-  },
+  // {
+  //   name: 'duration',
+  //   txName: 'components.track_list.duration',
+  //   renderContent: (track) => formatSeconds(track.duration),
+  //   width: 160,
+  //   offsetHeader: true,
+  // },
 ];
 
 function createFixedHeaderContent({ hiddenColumns }: ConfigProps) {
