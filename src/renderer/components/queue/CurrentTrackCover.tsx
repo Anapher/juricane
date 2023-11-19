@@ -1,12 +1,23 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Chip, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import ArtistChips from '../artist-chips/ArtistChips';
 import { selectCurrentTrack } from '../main/selectors';
 import TrackImage from '../tracks/TrackImage';
-import ArtistChips from '../artist-chips/ArtistChips';
 
 export default function CurrentTrackCover() {
   const currentTrack = useSelector(selectCurrentTrack);
+  const navigate = useNavigate();
+
   if (!currentTrack) return null;
+
+  const navigateToAlbum = () => {
+    if (!currentTrack.album) {
+      return;
+    }
+
+    navigate(`/albums/${encodeURIComponent(currentTrack.album)}`);
+  };
 
   return (
     <Box
@@ -27,6 +38,22 @@ export default function CurrentTrackCover() {
           {currentTrack.title}
         </Typography>
         <ArtistChips mt={1} artist={currentTrack.artist} />
+        {currentTrack.album && (
+          <Box
+            display="flex"
+            sx={{ mt: 4 }}
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Typography variant="caption">Album: </Typography>
+            <Chip
+              size="small"
+              label={currentTrack.album}
+              onClick={navigateToAlbum}
+              sx={{ ml: 1, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
+            />
+          </Box>
+        )}
       </Box>
     </Box>
   );
