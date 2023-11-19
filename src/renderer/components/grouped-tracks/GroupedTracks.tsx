@@ -21,7 +21,14 @@ type Props = {
 };
 
 export default function GroupedTracks({ groups, onNavigateToGroup }: Props) {
-  const chunks = useMemo(() => _.chunk(groups, GROUPS_PER_ROW), [groups]);
+  const chunks = useMemo(
+    () =>
+      _.chunk(
+        _.sortBy(groups, (x) => x.name),
+        GROUPS_PER_ROW
+      ),
+    [groups]
+  );
 
   return (
     <Virtuoso
