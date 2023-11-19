@@ -1,6 +1,6 @@
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import {
   Box,
@@ -15,10 +15,10 @@ import { useNavigate } from 'react-router-dom';
 import { useConfig } from 'renderer/app/queries';
 import { playNextTrack } from 'renderer/slices/music-player-slice';
 import { formatSeconds } from 'renderer/utils/duration';
+import ArtistChips from '../artist-chips/ArtistChips';
 import AudioPlayerContext from '../audio-player/AudioContext';
 import TrackImage from '../tracks/TrackImage';
 import { selectCurrentPlaylist, selectCurrentTrack } from './selectors';
-import ArtistChips from '../artist-chips/ArtistChips';
 
 export default function Footer() {
   const currentTrack = useSelector(selectCurrentTrack);
@@ -63,7 +63,11 @@ export default function Footer() {
             {currentTrack && <TrackImage size={56} track={currentTrack} />}
             <Box ml={2}>
               <Typography>{currentTrack?.title}</Typography>
-              <ArtistChips artist={currentTrack?.artist} small />
+              <ArtistChips
+                sx={{ marginLeft: -1 }}
+                artist={currentTrack?.artist}
+                small
+              />
             </Box>
           </Box>
           <Box display="flex" alignItems="center">
@@ -109,7 +113,7 @@ export default function Footer() {
             <Typography>Es wird gespielt aus</Typography>
             <Chip
               sx={{ ml: 1 }}
-              icon={<PlayArrowIcon />}
+              icon={<ShuffleIcon />}
               label={playlist?.name}
               onClick={() => navigate(`/playlists/${playlist?.id}`)}
             />

@@ -84,10 +84,14 @@ export default function Queue() {
                             spacing={2}
                           >
                             <TrackImage size={48} forceSize track={x} />
-                            <Stack direction="column" spacing={1}>
+                            <div>
                               <span>{x.title}</span>
-                              <ArtistChips artist={x.artist} small />
-                            </Stack>
+                              <ArtistChips
+                                sx={{ ml: -1, mt: 0.5 }}
+                                artist={x.artist}
+                                small
+                              />
+                            </div>
                           </Stack>
                         </TableCell>
 
