@@ -52,15 +52,8 @@ export default function Header() {
     <HeaderContainer
       style={{ backgroundColor: adminMode ? '#e74c3c' : undefined }}
     >
-      <Box flex={1} display="flex" alignItems="center" sx={{ pl: 2 }}>
-        <Stack direction="column" alignItems="flex-start">
-          <img
-            src={logo}
-            width={200}
-            alt="Lienke SounDevices"
-            onDoubleClick={handleToggleAdminMode}
-          />
-
+      <Box flex={1} display="flex" alignItems="flex-end" sx={{ p: 2 }}>
+        <Box display="flex" alignItems="center">
           <ButtonGroup
             variant="text"
             size="small"
@@ -73,21 +66,7 @@ export default function Header() {
               <ArrowForwardIosIcon />
             </Button>
           </ButtonGroup>
-        </Stack>
-      </Box>
-      <Box display="flex" justifyContent="space-between" flexDirection="column">
-        <Box display="flex" justifyContent="flex-end" sx={{ pr: 2, pt: 2 }}>
-          <Button
-            sx={{ opacity: adminMode ? 1 : 0.2 }}
-            onClick={handleToggleAdminMode}
-          >
-            {adminMode
-              ? t('components.admin_mode.button_text_disable')
-              : t('components.admin_mode.button_text')}
-          </Button>
-        </Box>
-        <Box p={2} display="flex" alignItems="flex-end">
-          <Box>
+          <Box pl={2}>
             {tabs.map((name) => (
               <Button
                 key={name}
@@ -114,6 +93,29 @@ export default function Header() {
             ))}
           </Box>
         </Box>
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        flexDirection="column"
+        py={2}
+      >
+        <Button
+          sx={{ opacity: adminMode ? 1 : 0.2 }}
+          onClick={handleToggleAdminMode}
+        >
+          {adminMode
+            ? t('components.admin_mode.button_text_disable')
+            : t('components.admin_mode.button_text')}
+        </Button>
+      </Box>
+      <Box display="flex" alignItems="center" p={2}>
+        <img
+          src={logo}
+          height="100%"
+          alt="Lienke SounDevices"
+          onDoubleClick={handleToggleAdminMode}
+        />
       </Box>
       <AdminKeyDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
       {adminMode && config?.adminModeTimeoutSeconds && (
