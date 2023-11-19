@@ -58,12 +58,35 @@ export default function Footer() {
       />
       <Box display="flex" alignItems="center">
         <Box flex={1} display="flex" alignItems="center" m={3}>
-          {currentTrack && <TrackImage size={56} track={currentTrack} />}
-          <Box ml={2}>
-            <Typography>{currentTrack?.title}</Typography>
-            <Typography variant="caption">
-              {currentTrack?.artist.join(', ')}
-            </Typography>
+          <Box flex={1} display="flex" alignItems="center">
+            {currentTrack && <TrackImage size={56} track={currentTrack} />}
+            <Box ml={2}>
+              <Typography>{currentTrack?.title}</Typography>
+              <Typography variant="caption">
+                {currentTrack?.artist.join(', ')}
+              </Typography>
+            </Box>
+          </Box>
+          <Box display="flex" alignItems="center">
+            {config?.showNextTrackButton && (
+              <IconButton
+                size="large"
+                onClick={() =>
+                  player.playing ? player.pause() : player.play()
+                }
+              >
+                {playing ? (
+                  <PauseCircleIcon fontSize="large" />
+                ) : (
+                  <PlayCircleIcon fontSize="large" />
+                )}
+              </IconButton>
+            )}
+            {config?.showPlayButton && (
+              <IconButton onClick={() => dispatch(playNextTrack())}>
+                <SkipNextIcon />
+              </IconButton>
+            )}
           </Box>
         </Box>
         {currentTrack && (
@@ -78,23 +101,6 @@ export default function Footer() {
           justifyContent="flex-end"
           alignItems="center"
         >
-          {config?.showNextTrackButton && (
-            <IconButton
-              size="large"
-              onClick={() => (player.playing ? player.pause() : player.play())}
-            >
-              {playing ? (
-                <PauseCircleIcon fontSize="large" />
-              ) : (
-                <PlayCircleIcon fontSize="large" />
-              )}
-            </IconButton>
-          )}
-          {config?.showPlayButton && (
-            <IconButton onClick={() => dispatch(playNextTrack())}>
-              <SkipNextIcon />
-            </IconButton>
-          )}
           <Box
             display="flex"
             alignItems="center"
