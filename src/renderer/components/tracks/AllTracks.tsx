@@ -1,9 +1,9 @@
-import { Box } from '@mui/material';
+import BackspaceIcon from '@mui/icons-material/Backspace';
+import { Box, IconButton, InputAdornment, TextField } from '@mui/material';
 import _ from 'lodash';
 import { useMemo, useState } from 'react';
 import { useMusicLibrary } from 'renderer/app/queries';
 import { Track } from 'renderer/types';
-import ScreenKeyboard from '../screen-keyboard/ScreenKeyboard';
 import Tracks from './Tracks';
 
 function useFilteredTracks(tracks: Track[] | undefined, searchText: string) {
@@ -48,11 +48,25 @@ export default function AllTracks() {
   if (!library.data) return null;
 
   return (
-    <Box flex={1} m={3} display="flex" flexDirection="column">
-      <ScreenKeyboard
-        value={searchText}
-        onChange={setSearchText}
+    <Box flex={1} m={2} mr={1} display="flex" flexDirection="column">
+      <TextField
+        size="small"
         sx={{ mb: 1 }}
+        value={searchText}
+        onChange={(ev) => setSearchText(ev.target.value)}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() =>
+                  setSearchText(searchText.substring(0, searchText.length - 1))
+                }
+              >
+                <BackspaceIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
       <Box flex={1}>
         <Tracks tracks={filteredTracks} />
