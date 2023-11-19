@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { Box, Button, ButtonGroup, Stack } from '@mui/material';
+import { Box, Button, ButtonGroup } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +14,7 @@ import AdminKeyDialog from './AdminKeyDialog';
 import UserInteractionTimeoutHandler from './UserInteractionTimeoutHandler';
 import { selectAdminMode } from './selectors';
 
-const tabs = ['Waitlist', 'Playlists', 'Tracks', 'Artists', 'Genres'];
+const tabs = ['Playing', 'Playlists', 'Tracks', 'Artists', 'Genres'];
 
 const HeaderContainer = styled('div')({
   backgroundColor: 'rgba(63,83,182,255)',

@@ -17,7 +17,7 @@ import CategoryGroupPage from './components/category/CategoryGroupPage';
 import CategoryTracksPage from './components/category/CategoryTracksPage';
 import Main from './components/main/Main';
 import NotLoadedScreen from './components/not-loaded/NotLoadedScreen';
-import Queue from './components/queue/Queue';
+import CurrentTrackCover from './components/queue/CurrentTrackCover';
 import AllTracks from './components/tracks/AllTracks';
 import './sagas/music-player-saga';
 import { setCurrentPlaylist } from './slices/music-player-slice';
@@ -58,7 +58,7 @@ function AppRoutes() {
       <Router>
         <Routes>
           <Route path="/" element={<Main />}>
-            <Route path="waitlist" element={<Queue />} />
+            <Route path="playing" element={<CurrentTrackCover />} />
             <Route path="playlists">
               <Route
                 index
@@ -129,7 +129,7 @@ function AppRoutes() {
                 }
               />
             </Route>
-            <Route index element={<Navigate to="/waitlist" replace />} />
+            <Route index element={<Navigate to="/playing" replace />} />
           </Route>
         </Routes>
       </Router>

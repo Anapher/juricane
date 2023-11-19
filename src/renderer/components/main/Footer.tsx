@@ -18,6 +18,7 @@ import { formatSeconds } from 'renderer/utils/duration';
 import AudioPlayerContext from '../audio-player/AudioContext';
 import TrackImage from '../tracks/TrackImage';
 import { selectCurrentPlaylist, selectCurrentTrack } from './selectors';
+import ArtistChips from '../artist-chips/ArtistChips';
 
 export default function Footer() {
   const currentTrack = useSelector(selectCurrentTrack);
@@ -62,9 +63,7 @@ export default function Footer() {
             {currentTrack && <TrackImage size={56} track={currentTrack} />}
             <Box ml={2}>
               <Typography>{currentTrack?.title}</Typography>
-              <Typography variant="caption">
-                {currentTrack?.artist.join(', ')}
-              </Typography>
+              <ArtistChips artist={currentTrack?.artist} small />
             </Box>
           </Box>
           <Box display="flex" alignItems="center">

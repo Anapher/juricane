@@ -34,7 +34,7 @@ export default function GroupedTracks({ groups, onNavigateToGroup }: Props) {
     <Virtuoso
       style={{ flex: 1, width: '100%' }}
       data={chunks}
-      itemContent={(__, chunk) => (
+      itemContent={(index, chunk) => (
         <Box display="flex" flexDirection="row">
           {chunk.map((group) => (
             <Card
@@ -43,6 +43,8 @@ export default function GroupedTracks({ groups, onNavigateToGroup }: Props) {
                 flex: 1,
                 minHeight: 0,
                 m: 1,
+                mt: index === 0 ? 2 : 1,
+                mb: index === chunks.length - 1 ? 2 : 1,
                 display: 'flex',
               }}
             >

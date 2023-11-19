@@ -70,7 +70,7 @@ export default function CategoryTracksPage({
   const isDefaultPlaylist = defaultPlaylist?.id === data.id;
 
   return (
-    <Box flex={1} display="flex" m={2} flexDirection="column">
+    <Box flex={1} display="flex" m={2} mr={1} flexDirection="column">
       <Box
         display="flex"
         flexDirection="row"

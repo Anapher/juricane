@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectCurrentTrack } from '../main/selectors';
 import TrackImage from '../tracks/TrackImage';
+import ArtistChips from '../artist-chips/ArtistChips';
 
 export default function CurrentTrackCover() {
   const currentTrack = useSelector(selectCurrentTrack);
@@ -25,7 +26,7 @@ export default function CurrentTrackCover() {
         <Typography variant="h5" align="center" sx={{ mt: 2 }}>
           {currentTrack.title}
         </Typography>
-        <Typography sx={{ mt: 1 }}>{currentTrack.artist.join(', ')}</Typography>
+        <ArtistChips mt={1} artist={currentTrack.artist} />
       </Box>
     </Box>
   );
