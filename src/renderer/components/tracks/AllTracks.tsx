@@ -53,6 +53,7 @@ export default function AllTracks() {
         size="small"
         sx={{ mb: 1 }}
         value={searchText}
+        placeholder="Songsuche..."
         onChange={(ev) => setSearchText(ev.target.value)}
         InputProps={{
           endAdornment: (

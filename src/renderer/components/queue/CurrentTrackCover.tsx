@@ -1,4 +1,4 @@
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Chip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ArtistChips from '../artist-chips/ArtistChips';
@@ -8,6 +8,9 @@ import TrackImage from '../tracks/TrackImage';
 export default function CurrentTrackCover() {
   const currentTrack = useSelector(selectCurrentTrack);
   const navigate = useNavigate();
+
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('lg'));
 
   if (!currentTrack) return null;
 
@@ -33,7 +36,7 @@ export default function CurrentTrackCover() {
         flexDirection="column"
         sx={{ maxWidth: 600, p: 3 }}
       >
-        <TrackImage size={200} track={currentTrack} />
+        <TrackImage size={isSmall ? 200 : 400} track={currentTrack} />
         <Typography variant="h5" align="center" sx={{ mt: 2 }}>
           {currentTrack.title}
         </Typography>
@@ -45,7 +48,6 @@ export default function CurrentTrackCover() {
             flexDirection="column"
             alignItems="center"
           >
-            <Typography variant="caption">Album: </Typography>
             <Chip
               size="small"
               label={currentTrack.album}

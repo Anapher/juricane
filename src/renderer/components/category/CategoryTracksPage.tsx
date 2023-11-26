@@ -70,7 +70,14 @@ export default function CategoryTracksPage({
   const isDefaultPlaylist = defaultPlaylist?.id === data.id;
 
   return (
-    <Box flex={1} display="flex" m={2} mr={1} flexDirection="column">
+    <Box
+      flex={1}
+      display="flex"
+      m={2}
+      mr={1}
+      flexDirection="column"
+      position="relative"
+    >
       <Box
         display="flex"
         flexDirection="row"
@@ -83,30 +90,29 @@ export default function CategoryTracksPage({
             {data.name}
           </Typography>
         </Box>
-        {playlist && (
-          <Box position="relative">
-            {isPlaying ? (
-              <Fab
-                color="primary"
-                disabled={isDefaultPlaylist}
-                aria-label="play default playlist"
-                onClick={resetToDefaultPlaylist}
-                sx={{ position: 'absolute', right: 16, top: 0 }}
-              >
-                <EjectIcon />
-              </Fab>
-            ) : (
-              <Fab
-                color="primary"
-                aria-label="play"
-                onClick={setPlaylistAsCurrent}
-                sx={{ position: 'absolute', right: 16, top: 0 }}
-              >
-                <PlayArrowIcon />
-              </Fab>
-            )}
-          </Box>
-        )}
+        {playlist &&
+          (isPlaying ? (
+            <Fab
+              color="primary"
+              disabled={isDefaultPlaylist}
+              aria-label="play default playlist"
+              size="medium"
+              onClick={resetToDefaultPlaylist}
+              sx={{ position: 'absolute', left: 16, top: 44 }}
+            >
+              <EjectIcon />
+            </Fab>
+          ) : (
+            <Fab
+              color="primary"
+              aria-label="play"
+              onClick={setPlaylistAsCurrent}
+              size="medium"
+              sx={{ position: 'absolute', left: 16, top: 44 }}
+            >
+              <PlayArrowIcon />
+            </Fab>
+          ))}
       </Box>
       <Paper sx={{ flex: 1, mt: 1, borderRadius: 3 }} elevation={6}>
         <Tracks tracks={tracks} hiddenColumn={hiddenColumn} />
