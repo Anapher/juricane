@@ -17,7 +17,7 @@ import { selectAdminMode } from './selectors';
 const tabs = ['Playing', 'Playlists', 'Tracks', 'Artists', 'Genres'];
 
 const HeaderContainer = styled('div')({
-  backgroundColor: 'rgba(63,83,182,255)',
+  backgroundColor: 'rgb(32, 32, 32)',
   transition: 'background-color 0.2s ease',
   maxHeight: 140,
   minHeight: 80,
