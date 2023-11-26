@@ -28,13 +28,33 @@ startAppListening({
     if (state.musicPlayer.waitlist.length > 0) {
       api.dispatch(setCurrentTrack(state.musicPlayer.waitlist[0]));
     } else {
-      const list = state.musicPlayer.currentPlaylist?.tracks.filter(
-        (x) => x.url !== state.musicPlayer.currentTrack?.url
-      );
-      if (!list) return;
+      if (!state.musicPlayer.currentPlaylist) {
+        return;
+      }
 
-      const nextTrack = drawRandomItem(list);
-      api.dispatch(setCurrentTrack(nextTrack));
+      const playlistTrackIds = new Set(
+        state.musicPlayer.currentPlaylist.tracks.map((x) => x.id)
+      );
+
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < state.musicPlayer.playedTracksHistory.length; i++) {
+        const trackId = state.musicPlayer.playedTracksHistory[i];
+
+        if (playlistTrackIds.size === 1) {
+          break;
+        }
+
+        playlistTrackIds.delete(trackId);
+      }
+
+      const trackIdList = Array.from(playlistTrackIds);
+
+      const trackId = drawRandomItem(trackIdList);
+      const track = state.musicPlayer.currentPlaylist.tracks.find(
+        (x) => x.id === trackId
+      )!;
+
+      api.dispatch(setCurrentTrack(track));
     }
   },
 });

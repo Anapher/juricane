@@ -10,6 +10,7 @@ type CurrentPlaylist = {
 export type MusicPlayerState = {
   currentTrack: Track | null;
   currentPlaylist: CurrentPlaylist | null;
+  playedTracksHistory: number[];
   waitlist: Track[];
   libraryPath: string | null;
 };
@@ -17,6 +18,7 @@ export type MusicPlayerState = {
 const initialState: MusicPlayerState = {
   currentTrack: null,
   currentPlaylist: null,
+  playedTracksHistory: [],
   waitlist: [],
   libraryPath: null,
 };
@@ -45,6 +47,8 @@ export const musicPlayerSlice = createSlice({
       if (state.waitlist.length > 0 && state.waitlist[0].id === payload.id) {
         state.waitlist = state.waitlist.slice(1);
       }
+
+      state.playedTracksHistory = [payload.id, ...state.playedTracksHistory];
     },
     setCurrentPlaylist(state, { payload }: PayloadAction<CurrentPlaylist>) {
       state.currentPlaylist = payload;
