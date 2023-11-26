@@ -36,7 +36,7 @@ export default function CurrentTrackCover() {
         flexDirection="column"
         sx={{ maxWidth: 600, p: 3 }}
       >
-        <TrackImage size={isSmall ? 200 : 400} track={currentTrack} />
+        <TrackImage size={isSmall ? 200 : 280} track={currentTrack} />
         <Typography variant="h5" align="center" sx={{ mt: 2 }}>
           {currentTrack.title}
         </Typography>
