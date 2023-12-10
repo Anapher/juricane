@@ -9,12 +9,14 @@ import {
   LinearProgress,
   Typography,
 } from '@mui/material';
+import Lottie from 'lottie-react';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from 'renderer/app/queries';
 import { playNextTrack } from 'renderer/slices/music-player-slice';
 import { formatSeconds } from 'renderer/utils/duration';
+import soundWaveAnimation from '../../../assets/sound_wave_animation.json';
 import ArtistChips from '../artist-chips/ArtistChips';
 import AudioPlayerContext from '../audio-player/AudioContext';
 import TrackImage from '../tracks/TrackImage';
@@ -58,11 +60,22 @@ export default function Footer() {
         }}
       />
       <Box display="flex" alignItems="center">
-        <Box flex={1} display="flex" alignItems="center" m={3}>
-          <Box flex={1} display="flex" alignItems="center">
+        <Box flex={1} display="flex" alignItems="center" m={3} minWidth={0}>
+          <Box flex={1} display="flex" alignItems="center" minWidth={0}>
+            <Box width={50} mr={3}>
+              <Lottie animationData={soundWaveAnimation} />
+            </Box>
             {currentTrack && <TrackImage size={56} track={currentTrack} />}
-            <Box ml={2}>
-              <Typography>{currentTrack?.title}</Typography>
+            <Box ml={2} flex={1} minWidth={0}>
+              <Typography
+                style={{
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                }}
+              >
+                {currentTrack?.title}
+              </Typography>
               <ArtistChips
                 sx={{ marginLeft: -1 }}
                 artist={currentTrack?.artist}
@@ -70,7 +83,7 @@ export default function Footer() {
               />
             </Box>
           </Box>
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" ml={3}>
             {config?.showNextTrackButton && (
               <IconButton
                 size="large"
