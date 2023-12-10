@@ -14,7 +14,14 @@ export default function UserInteractionTimeoutHandler({
   handlerRef.current = handler;
 
   useEffect(() => {
-    const events = ['scroll', 'keydown', 'click', 'touchstart'];
+    const events = [
+      'scroll',
+      'keydown',
+      'click',
+      'touchstart',
+      'mousemove',
+      'wheel',
+    ];
 
     let timeoutHandle: any | undefined;
 
