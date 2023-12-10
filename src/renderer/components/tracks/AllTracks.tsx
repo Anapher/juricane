@@ -1,4 +1,4 @@
-import BackspaceIcon from '@mui/icons-material/Backspace';
+import ClearIcon from '@mui/icons-material/Clear';
 import { Box, IconButton, InputAdornment, TextField } from '@mui/material';
 import _ from 'lodash';
 import { useMemo, useState } from 'react';
@@ -58,12 +58,8 @@ export default function AllTracks() {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton
-                onClick={() =>
-                  setSearchText(searchText.substring(0, searchText.length - 1))
-                }
-              >
-                <BackspaceIcon />
+              <IconButton onClick={() => setSearchText('')}>
+                <ClearIcon />
               </IconButton>
             </InputAdornment>
           ),
