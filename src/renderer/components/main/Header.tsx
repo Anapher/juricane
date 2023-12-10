@@ -1,6 +1,11 @@
 import styled from '@emotion/styled';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import ListIcon from '@mui/icons-material/List';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import PeopleIcon from '@mui/icons-material/People';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +19,13 @@ import AdminKeyDialog from './AdminKeyDialog';
 import UserInteractionTimeoutHandler from './UserInteractionTimeoutHandler';
 import { selectAdminMode } from './selectors';
 
-const tabs = ['Playing', 'Playlists', 'Tracks', 'Artists', 'Genres'];
+const tabs = [
+  { name: 'Playing', Icon: PlayArrowIcon },
+  { name: 'Playlists', Icon: ListIcon },
+  { name: 'Tracks', Icon: MusicNoteIcon },
+  { name: 'Artists', Icon: PeopleIcon },
+  { name: 'Genres', Icon: LibraryMusicIcon },
+];
 
 const HeaderContainer = styled('div')({
   backgroundColor: 'rgb(32, 32, 32)',
@@ -45,7 +56,7 @@ export default function Header() {
   };
 
   const navigateBackToWaitlist = () => {
-    navigate(getPathFromTab(tabs[0]));
+    navigate(getPathFromTab(tabs[0].name));
   };
 
   return (
@@ -67,7 +78,7 @@ export default function Header() {
             </Button>
           </ButtonGroup>
           <Box pl={2}>
-            {tabs.map((name) => (
+            {tabs.map(({ name, Icon }) => (
               <Button
                 key={name}
                 // eslint-disable-next-line react/jsx-props-no-spreading
@@ -88,6 +99,7 @@ export default function Header() {
                   transition: 'color 0.2s ease',
                 }}
               >
+                {Icon && <Icon sx={{ mr: 1 }} />}
                 {name}
               </Button>
             ))}
