@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import glob from 'fast-glob';
 import fs from 'fs/promises';
 import _ from 'lodash';
@@ -100,11 +101,10 @@ export default async function buildTrackDb(
     try {
       const id = tracks.length;
 
-      // eslint-disable-next-line no-await-in-loop
       const [track, image] = await loadMusicTags(file, id, artistSeparators);
 
       if (image) {
-        fs.writeFile(`${tracksImageDir}/${id}.png`, image);
+        await fs.writeFile(`${tracksImageDir}/${id}.png`, image);
       }
       tracks.push(track);
     } catch (error) {
