@@ -110,6 +110,7 @@ export default async function buildTrackDb(
     } catch (error) {
       // ignore
       // eslint-disable-next-line no-console
+      console.error(`Error while trying to load file ${file}`);
       console.error(error);
     }
   }
