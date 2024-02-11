@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
@@ -77,9 +78,9 @@ const columns: Column[] = [
     txName: 'components.track_list.artist',
     renderContent: (track, onNavigate) => (
       <>
-        {track.artist.map((x) => (
+        {track.artist.map((x, i) => (
           <ActionCell
-            key={x}
+            key={i.toString()}
             text={x}
             onClick={() => onNavigate({ type: 'artists', name: x })}
           />

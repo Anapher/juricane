@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Box, BoxProps, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -13,10 +14,10 @@ export default function ArtistChips({ artist, small, ...boxProps }: Props) {
 
   return (
     <Box {...boxProps}>
-      {artist?.map((x) => (
+      {artist?.map((x, i) => (
         <Chip
           size={small ? 'small' : 'medium'}
-          key={x}
+          key={i.toString()}
           label={x}
           onClick={() => navigate(`/artists/${encodeURIComponent(x)}`)}
           sx={{
