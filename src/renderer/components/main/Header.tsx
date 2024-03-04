@@ -6,6 +6,7 @@ import ListIcon from '@mui/icons-material/List';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import PeopleIcon from '@mui/icons-material/People';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, ButtonGroup } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -93,9 +94,6 @@ export default function Header() {
                 sx={{
                   p: 2,
                   fontSize: 16,
-                  // color: pathname.startsWith(getPathFromTab(name))
-                  //   ? 'white'
-                  //   : undefined,
                   transition: 'color 0.2s ease',
                 }}
               >
@@ -103,6 +101,17 @@ export default function Header() {
                 {name}
               </Button>
             ))}
+            <Button
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...to(`${getPathFromTab('Tracks')}?search`, NavLink)}
+              sx={{
+                p: 2,
+                fontSize: 16,
+                transition: 'color 0.2s ease',
+              }}
+            >
+              <SearchIcon />
+            </Button>
           </Box>
         </Box>
       </Box>
