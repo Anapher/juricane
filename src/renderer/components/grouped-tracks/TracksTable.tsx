@@ -104,10 +104,15 @@ const columns: Column[] = [
     name: 'genre',
     txName: 'components.track_list.genre',
     renderContent: (track, onNavigate) => (
-      <ActionCell
-        text={track.genre}
-        onClick={() => onNavigate({ type: 'genres', name: track.genre! })}
-      />
+      <>
+        {track.genre.map((x, i) => (
+          <ActionCell
+            key={i.toString()}
+            text={x}
+            onClick={() => onNavigate({ type: 'genres', name: x })}
+          />
+        ))}
+      </>
     ),
     width: 160,
     offsetHeader: true,

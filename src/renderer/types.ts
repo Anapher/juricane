@@ -6,7 +6,7 @@ export type Track = {
 
   hasImage: boolean;
   artist: string[];
-  genre?: string;
+  genre: string[];
   year?: number;
   album?: string;
 };

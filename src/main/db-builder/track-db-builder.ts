@@ -74,13 +74,10 @@ function generateMusicLibraryCategories(
 
 export default async function buildTrackDb(
   dir: string,
-  artistSeparators: string[]
+  artistSeparators: string[],
+  genreSeparators: string[]
 ): Promise<void> {
   const trackFiles = await glob(`${dir.replaceAll(path.sep, '/')}/**/*.mp3`);
-  // trackFiles = Array.from({ length: 20000 }).map(
-  //   (x, i) => trackFiles[i % trackFiles.length]
-  // );
-
   const tracksImageDir = `${dir.replaceAll(path.sep, '/')}/${TRACK_IMAGES_DIR}`;
   try {
     await fs.mkdir(tracksImageDir);
@@ -101,7 +98,12 @@ export default async function buildTrackDb(
     try {
       const id = tracks.length;
 
-      const [track, image] = await loadMusicTags(file, id, artistSeparators);
+      const [track, image] = await loadMusicTags(
+        file,
+        id,
+        artistSeparators,
+        genreSeparators
+      );
 
       if (image) {
         await fs.writeFile(`${tracksImageDir}/${id}.png`, image);

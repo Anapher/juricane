@@ -63,7 +63,11 @@ ipcMain.handle(
       trackDb = await loadTrackDb(config.trackDirectory);
     } catch (error) {
       try {
-        await buildTrackDb(config.trackDirectory, config.artistSeparators);
+        await buildTrackDb(
+          config.trackDirectory,
+          config.artistSeparators,
+          config.genreSeparators
+        );
       } catch (err) {
         console.log(err);
         throw err;

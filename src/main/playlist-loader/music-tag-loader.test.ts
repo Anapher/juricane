@@ -1,4 +1,4 @@
-import { splitArtist } from './music-tag-loader';
+import { splitStr } from './music-tag-loader';
 
 const testData = [
   {
@@ -31,7 +31,7 @@ const artistSeparators = [
 describe('split artists', () => {
   testData.forEach((data) => {
     it(`Split ${data.artist} correctly`, () => {
-      const actual = splitArtist(data.artist, artistSeparators);
+      const actual = splitStr(data.artist, artistSeparators);
       expect(actual).toEqual(data.expected);
     });
   });

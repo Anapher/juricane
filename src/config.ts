@@ -6,6 +6,7 @@ type Config = {
   showPlayButton: boolean;
   defaultPlaylistName: string;
   artistSeparators: string[];
+  genreSeparators: string[];
   adminModeTimeoutSeconds: number | undefined;
   backToWaitlistTimeoutSeconds: number | undefined;
 };
