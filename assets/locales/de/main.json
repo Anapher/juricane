@@ -27,9 +27,7 @@
       "dialog_description": "Geben Sie das Passwort ein, um den Admin Modus zu aktivieren.",
       "password": "Passwort",
       "cancel": "Abbrechen",
-      "activate": "Aktivieren",
-      "button_text": "Admin",
-      "button_text_disable": "Admin Modus deaktivieren"
+      "activate": "Aktivieren"
     }
   }
 }

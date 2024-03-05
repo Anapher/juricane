@@ -1,10 +1,14 @@
 import { Box } from '@mui/material';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import Queue from '../queue/Queue';
+import AdminKeyDialog from './AdminKeyDialog';
 import Footer from './Footer';
 import Header from './Header';
-import Queue from '../queue/Queue';
 
 export default function Main() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <div
       style={{
@@ -27,10 +31,11 @@ export default function Main() {
           <Outlet />
         </Box>
         <Box flex={1} display="flex" p={2} pl={1}>
-          <Queue />
+          <Queue setDialogOpen={setDialogOpen} />
         </Box>
       </Box>
       <Footer />
+      <AdminKeyDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </div>
   );
 }

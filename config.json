@@ -2,8 +2,8 @@
   "playlistDirectory": "/Users/vgriebel/Documents/github/juricane/test_music/Playlisten",
   "trackDirectory": "/Users/vgriebel/Documents/github/juricane/test_music",
   "adminPassword": "test",
-  "showNextTrackButton": true,
-  "showPlayButton": true,
+  "showNextTrackButton": false,
+  "showPlayButton": false,
   "defaultPlaylistName": "Playlist_Ordner_2",
   "artistSeparators": [
     " featuring ",

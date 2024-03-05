@@ -8,15 +8,12 @@ import PeopleIcon from '@mui/icons-material/People';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, ButtonGroup } from '@mui/material';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useConfig } from 'renderer/app/queries';
 import { toggleAdminMode } from 'renderer/slices/admin-slice';
 import to from 'renderer/utils/to';
 import logo from '../../../../assets/logo.png';
-import AdminKeyDialog from './AdminKeyDialog';
 import UserInteractionTimeoutHandler from './UserInteractionTimeoutHandler';
 import { selectAdminMode } from './selectors';
 
@@ -42,8 +39,6 @@ export default function Header() {
     return `/${tabname.toLowerCase()}`;
   };
   const navigate = useNavigate();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const { t } = useTranslation();
   const adminMode = useSelector(selectAdminMode);
   const dispatch = useDispatch();
   const { data: config } = useConfig();
@@ -52,7 +47,7 @@ export default function Header() {
     if (adminMode) {
       dispatch(toggleAdminMode());
     } else {
-      setDialogOpen(true);
+      dispatch(toggleAdminMode());
     }
   };
 
@@ -61,9 +56,7 @@ export default function Header() {
   };
 
   return (
-    <HeaderContainer
-      style={{ backgroundColor: adminMode ? '#e74c3c' : undefined }}
-    >
+    <HeaderContainer>
       <Box flex={1} display="flex" alignItems="flex-end" sx={{ p: 2 }}>
         <Box display="flex" alignItems="center">
           <ButtonGroup
@@ -115,21 +108,6 @@ export default function Header() {
           </Box>
         </Box>
       </Box>
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        flexDirection="column"
-        py={2}
-      >
-        <Button
-          sx={{ opacity: adminMode ? 1 : 0.2 }}
-          onClick={handleToggleAdminMode}
-        >
-          {adminMode
-            ? t('components.admin_mode.button_text_disable')
-            : t('components.admin_mode.button_text')}
-        </Button>
-      </Box>
       <Box display="flex" alignItems="center" p={2}>
         <img
           src={logo}
@@ -138,7 +116,6 @@ export default function Header() {
           onDoubleClick={handleToggleAdminMode}
         />
       </Box>
-      <AdminKeyDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
       {adminMode && config?.adminModeTimeoutSeconds && (
         <UserInteractionTimeoutHandler
           handler={handleToggleAdminMode}

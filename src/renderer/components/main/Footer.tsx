@@ -20,13 +20,18 @@ import soundWaveAnimation from '../../../assets/sound_wave_animation.json';
 import ArtistChips from '../artist-chips/ArtistChips';
 import AudioPlayerContext from '../audio-player/AudioContext';
 import TrackImage from '../tracks/TrackImage';
-import { selectCurrentPlaylist, selectCurrentTrack } from './selectors';
+import {
+  selectAdminMode,
+  selectCurrentPlaylist,
+  selectCurrentTrack,
+} from './selectors';
 
 export default function Footer() {
   const currentTrack = useSelector(selectCurrentTrack);
   const playlist = useSelector(selectCurrentPlaylist);
   const dispatch = useDispatch();
   const { data: config } = useConfig();
+  const adminMode = useSelector(selectAdminMode);
 
   const [position, setPosition] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -84,7 +89,7 @@ export default function Footer() {
             </Box>
           </Box>
           <Box display="flex" alignItems="center" ml={3}>
-            {config?.showNextTrackButton && (
+            {(config?.showNextTrackButton || adminMode) && (
               <IconButton
                 size="large"
                 onClick={() =>
@@ -98,7 +103,7 @@ export default function Footer() {
                 )}
               </IconButton>
             )}
-            {config?.showPlayButton && (
+            {(config?.showPlayButton || adminMode) && (
               <IconButton onClick={() => dispatch(playNextTrack())}>
                 <SkipNextIcon />
               </IconButton>
