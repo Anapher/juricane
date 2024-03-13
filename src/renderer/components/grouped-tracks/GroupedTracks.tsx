@@ -56,9 +56,8 @@ export default function GroupedTracks({ items, onNavigateToGroup }: Props) {
     });
   };
 
-  _;
-
   const { firstItemsIndexes } = groupCounts.reduce(
+    // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-shadow
     ({ firstItemsIndexes, offset }, count) => ({
       firstItemsIndexes: [...firstItemsIndexes, offset],
