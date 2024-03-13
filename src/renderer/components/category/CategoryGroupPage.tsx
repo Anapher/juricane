@@ -18,9 +18,7 @@ export default function CategoryGroupPage({ categorySelector }: Props) {
 
   return (
     <GroupedTracks
-      groups={
-        Array.isArray(categories) ? categories : Object.values(categories)
-      }
+      items={Array.isArray(categories) ? categories : Object.values(categories)}
       onNavigateToGroup={(group) => navigate(group.id)}
     />
   );
