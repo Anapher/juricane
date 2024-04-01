@@ -20,11 +20,16 @@ const GROUPS_PER_ROW = 6;
 type Props = {
   items: CategoryInfo[];
   onNavigateToGroup: (group: CategoryInfo) => void;
+  groupSelector: _.ValueIteratee<CategoryInfo>;
+  showJumpBar?: boolean;
 };
 
-const createData = (items: CategoryInfo[]) => {
+export const createData = (
+  items: CategoryInfo[],
+  propSelector: _.ValueIteratee<CategoryInfo>
+) => {
   const sortedItems = _.sortBy(items, (x) => x.name);
-  const groupedItems = _.groupBy(sortedItems, (x) => x.name[0].toUpperCase());
+  const groupedItems = _.groupBy(sortedItems, propSelector);
   const groupedChunks = Object.fromEntries(
     Object.entries(groupedItems).map(([k, v]) => [
       k,
@@ -42,14 +47,19 @@ const createData = (items: CategoryInfo[]) => {
   };
 };
 
-const GroupedList = styled(GroupedVirtuoso)({
+const NoScrollBarGroupedVirtuoso = styled(GroupedVirtuoso)({
   '::-webkit-scrollbar': { display: 'none' },
 });
 
-export default function GroupedTracks({ items, onNavigateToGroup }: Props) {
+export default function GroupedTracks({
+  items,
+  onNavigateToGroup,
+  groupSelector,
+  showJumpBar,
+}: Props) {
   const { groupedChunks, groupCounts, groups } = useMemo(
-    () => createData(items),
-    [items]
+    () => createData(items, groupSelector),
+    [items, groupSelector]
   );
 
   const virtuoso = useRef(null);
@@ -69,9 +79,13 @@ export default function GroupedTracks({ items, onNavigateToGroup }: Props) {
     { firstItemsIndexes: [], offset: 0 }
   ) as any;
 
+  const ListComponent = showJumpBar
+    ? NoScrollBarGroupedVirtuoso
+    : GroupedVirtuoso;
+
   return (
     <Box flex={1} display="flex" width="100%" my={2}>
-      <GroupedList
+      <ListComponent
         ref={virtuoso}
         groupCounts={groupCounts}
         style={{
@@ -138,10 +152,12 @@ export default function GroupedTracks({ items, onNavigateToGroup }: Props) {
           );
         }}
       />
-      <AlphabeticJumpBar
-        groups={groups}
-        handleScroll={(index) => handleScroll(firstItemsIndexes[index])}
-      />
+      {showJumpBar && (
+        <AlphabeticJumpBar
+          groups={groups}
+          handleScroll={(index) => handleScroll(firstItemsIndexes[index])}
+        />
+      )}
     </Box>
   );
 }

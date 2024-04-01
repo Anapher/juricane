@@ -1,7 +1,11 @@
+import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { useMusicLibrary } from 'renderer/app/queries';
 import { CategoryInfo, MusicLibrary } from 'renderer/types';
 import GroupedTracks from '../grouped-tracks/GroupedTracks';
+
+const alphabeticSelector: _.ValueIteratee<CategoryInfo> = (x) =>
+  x.name[0].toUpperCase();
 
 type Props = {
   categorySelector: (
@@ -20,6 +24,8 @@ export default function CategoryGroupPage({ categorySelector }: Props) {
     <GroupedTracks
       items={Array.isArray(categories) ? categories : Object.values(categories)}
       onNavigateToGroup={(group) => navigate(group.id)}
+      groupSelector={alphabeticSelector}
+      showJumpBar
     />
   );
 }

@@ -21,6 +21,7 @@ import CurrentTrackCover from './components/queue/CurrentTrackCover';
 import AllTracks from './components/tracks/AllTracks';
 import './sagas/music-player-saga';
 import { setCurrentPlaylist } from './slices/music-player-slice';
+import Playlists from './components/playlists/Playlists';
 
 const darkTheme = createTheme({
   palette: {
@@ -60,12 +61,7 @@ function AppRoutes() {
           <Route path="/" element={<Main />}>
             <Route path="playing" element={<CurrentTrackCover />} />
             <Route path="playlists">
-              <Route
-                index
-                element={
-                  <CategoryGroupPage categorySelector={(x) => x.playlists} />
-                }
-              />
+              <Route index element={<Playlists />} />
               <Route
                 path=":id"
                 element={

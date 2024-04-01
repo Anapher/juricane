@@ -14,6 +14,7 @@ export type Track = {
 export type CategoryInfo = {
   id: string;
   name: string;
+  group?: string;
   trackIds: number[];
   previewImageTrackIds: number[];
 };

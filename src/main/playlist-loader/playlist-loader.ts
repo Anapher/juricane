@@ -63,5 +63,6 @@ export function createCategoryInfoForPlaylists(
       .filter((x): x is number => x !== undefined)
       .sortBy((x) => db.tracks[x].title)
       .value(),
+    group: path.basename(path.dirname(p)),
   }));
 }
