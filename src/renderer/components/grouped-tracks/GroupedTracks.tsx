@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
+import styled from '@emotion/styled';
 import {
   Box,
-  ButtonBase,
   Card,
   CardActionArea,
   CardContent,
@@ -13,10 +13,9 @@ import { useMemo, useRef } from 'react';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { CategoryInfo } from 'renderer/types';
 import TrackListPreview from '../track-list-preview/TrackListPreview';
+import AlphabeticJumpBar from './AlphabeticJumpBar';
 
 const GROUPS_PER_ROW = 6;
-
-const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 type Props = {
   items: CategoryInfo[];
@@ -25,7 +24,7 @@ type Props = {
 
 const createData = (items: CategoryInfo[]) => {
   const sortedItems = _.sortBy(items, (x) => x.name);
-  const groupedItems = _.groupBy(sortedItems, (x) => x.name[0]);
+  const groupedItems = _.groupBy(sortedItems, (x) => x.name[0].toUpperCase());
   const groupedChunks = Object.fromEntries(
     Object.entries(groupedItems).map(([k, v]) => [
       k,
@@ -43,6 +42,10 @@ const createData = (items: CategoryInfo[]) => {
   };
 };
 
+const GroupedList = styled(GroupedVirtuoso)({
+  '::-webkit-scrollbar': { display: 'none' },
+});
+
 export default function GroupedTracks({ items, onNavigateToGroup }: Props) {
   const { groupedChunks, groupCounts, groups } = useMemo(
     () => createData(items),
@@ -50,7 +53,7 @@ export default function GroupedTracks({ items, onNavigateToGroup }: Props) {
   );
 
   const virtuoso = useRef(null);
-  const handleScroll = (index: number) => () => {
+  const handleScroll = (index: number) => {
     (virtuoso.current as any)?.scrollToIndex({
       index,
     });
@@ -68,10 +71,13 @@ export default function GroupedTracks({ items, onNavigateToGroup }: Props) {
 
   return (
     <Box flex={1} display="flex" width="100%" my={2}>
-      <GroupedVirtuoso
+      <GroupedList
         ref={virtuoso}
         groupCounts={groupCounts}
-        style={{ flex: 1, width: '100%' }}
+        style={{
+          flex: 1,
+          width: '100%',
+        }}
         groupContent={(index) => {
           return (
             <Box
@@ -132,26 +138,10 @@ export default function GroupedTracks({ items, onNavigateToGroup }: Props) {
           );
         }}
       />
-      <Box display="flex" flexDirection="column" width={32}>
-        {alphabet.map((x) => {
-          const groupIndex = groups.indexOf(x);
-          return (
-            <ButtonBase
-              disabled={groupIndex === -1}
-              key={x}
-              onClick={handleScroll(firstItemsIndexes[groupIndex])}
-              sx={(theme) => ({
-                flex: 1,
-                opacity: groupIndex === -1 ? 0.2 : 1,
-                borderTopRightRadius: theme.shape.borderRadius,
-                borderBottomRightRadius: theme.shape.borderRadius,
-              })}
-            >
-              {x}
-            </ButtonBase>
-          );
-        })}
-      </Box>
+      <AlphabeticJumpBar
+        groups={groups}
+        handleScroll={(index) => handleScroll(firstItemsIndexes[index])}
+      />
     </Box>
   );
 }

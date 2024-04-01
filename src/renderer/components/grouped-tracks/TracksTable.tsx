@@ -13,15 +13,17 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  styled,
   useTheme,
 } from '@mui/material';
 import { TFunction } from 'i18next';
 import _ from 'lodash';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TableComponents, TableVirtuoso } from 'react-virtuoso';
 import { Track } from 'renderer/types';
 import TrackImage from '../tracks/TrackImage';
+import AlphabeticJumpBar from './AlphabeticJumpBar';
 
 export type ColumnName = 'title' | 'artist' | 'duration' | 'album' | 'genre';
 
@@ -117,13 +119,6 @@ const columns: Column[] = [
     width: 160,
     offsetHeader: true,
   },
-  // {
-  //   name: 'duration',
-  //   txName: 'components.track_list.duration',
-  //   renderContent: (track) => formatSeconds(track.duration),
-  //   width: 160,
-  //   offsetHeader: true,
-  // },
 ];
 
 function createFixedHeaderContent({ hiddenColumns }: ConfigProps) {
@@ -240,17 +235,56 @@ function rowContent(
   );
 }
 
+const createJumpTable = (tracks: Track[]) => {
+  const jumpTable: Record<string, number> = {};
+
+  let lastBeginLetter = '';
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < tracks.length; ++i) {
+    const track = tracks[i];
+
+    const startLetter = track.title[0].toUpperCase();
+    if (lastBeginLetter !== startLetter) {
+      lastBeginLetter = startLetter;
+      jumpTable[startLetter] = i;
+    }
+  }
+
+  return jumpTable;
+};
+
+const NoScrollbarTable = styled(TableVirtuoso)({
+  '::-webkit-scrollbar': { display: 'none' },
+});
+
 export default function TracksTable({ tracks, ...configProps }: Props) {
   const theme = useTheme();
   const { t } = useTranslation();
+  const virtuoso = useRef(null);
+  const jumpTable = createJumpTable(tracks);
+
+  const handleScroll = (index: number) => {
+    (virtuoso.current as any)?.scrollToIndex({
+      index,
+    });
+  };
 
   return (
-    <TableVirtuoso
-      data={tracks}
-      components={VirtuosoTableComponents}
-      fixedHeaderContent={createFixedHeaderContent(configProps)}
-      itemContent={(index, data) => rowContent(index, data, configProps, t)}
-      style={{ borderRadius: theme.shape.borderRadius * 2 }}
-    />
+    <Box display="flex" flexDirection="row" flex={1} width="100%" height="100%">
+      <NoScrollbarTable
+        ref={virtuoso}
+        data={tracks}
+        // @ts-ignore
+        components={VirtuosoTableComponents}
+        fixedHeaderContent={createFixedHeaderContent(configProps)}
+        // @ts-ignore
+        itemContent={(index, data) => rowContent(index, data, configProps, t)}
+        style={{ borderRadius: theme.shape.borderRadius * 2, flex: 1 }}
+      />
+      <AlphabeticJumpBar
+        groups={Object.keys(jumpTable)}
+        handleScroll={(index) => handleScroll(Object.values(jumpTable)[index])}
+      />
+    </Box>
   );
 }
