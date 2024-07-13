@@ -27,4 +27,9 @@ export type TrackDb = {
   albums: Record<string, CategoryInfo>;
 };
 
+export type OwnPlaylist = {
+  name: string;
+  trackIds: number[];
+};
+
 export type MusicLibrary = TrackDb & { playlists: CategoryInfo[] };

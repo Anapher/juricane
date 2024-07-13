@@ -1,5 +1,6 @@
 type Config = {
   playlistDirectory: string;
+  ownPlaylistDirectory: string;
   trackDirectory: string;
   adminPassword: string;
   showNextTrackButton: boolean;

@@ -12,12 +12,13 @@ import Config from 'config';
 import { BrowserWindow, app, dialog, ipcMain, shell } from 'electron';
 import fs from 'fs/promises';
 import path from 'path';
-import { MusicLibrary, TrackDb } from 'renderer/types';
+import { MusicLibrary, OwnPlaylist, TrackDb } from 'renderer/types';
 import buildTrackDb, { loadTrackDb } from './db-builder/track-db-builder';
 import loadAllPlaylistsFromDirectory, {
   createCategoryInfoForPlaylists,
 } from './playlist-loader/playlist-loader';
 import { resolveHtmlPath } from './utils';
+import { writeOwnPlaylist } from './playlist-loader/own-playlists';
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -85,6 +86,39 @@ ipcMain.handle(
       config.trackDirectory
     );
     return { ...trackDb, playlists: playlistsMerged };
+  }
+);
+
+ipcMain.handle(
+  'files:updateOwnPlaylist',
+  async (
+    event,
+    config: Config,
+    playlist: OwnPlaylist,
+    library: MusicLibrary
+  ) => {
+    await writeOwnPlaylist(config.ownPlaylistDirectory, playlist, library);
+  }
+);
+
+ipcMain.handle(
+  'files:loadOwnPlaylists',
+  async (event, config: Config, library: MusicLibrary) => {
+    const playlists = await loadAllPlaylistsFromDirectory(
+      config.ownPlaylistDirectory
+    );
+
+    const playlistsMerged = createCategoryInfoForPlaylists(
+      playlists,
+      library,
+      config.trackDirectory,
+      false
+    );
+
+    return playlistsMerged.map<OwnPlaylist>((x) => ({
+      name: x.name,
+      trackIds: x.trackIds,
+    }));
   }
 );
 

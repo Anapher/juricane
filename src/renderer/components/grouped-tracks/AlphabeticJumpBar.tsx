@@ -9,7 +9,7 @@ type Props = {
 
 export default function AlphabeticJumpBar({ groups, handleScroll }: Props) {
   return (
-    <Box display="flex" flexDirection="column" width={32} ml={1}>
+    <Box display="flex" flexDirection="column" width={32}>
       {alphabet.map((x) => {
         const groupIndex = groups.indexOf(x);
         return (

@@ -1,5 +1,6 @@
 {
   "playlistDirectory": "/Users/vgriebel/Documents/github/juricane/test_music/Playlisten",
+  "ownPlaylistDirectory": "/Users/vgriebel/Documents/github/juricane/test_music/eigene_playlisten",
   "trackDirectory": "/Users/vgriebel/Documents/github/juricane/test_music",
   "adminPassword": "test",
   "showNextTrackButton": false,

@@ -9,9 +9,14 @@ import { selectQueueTracks } from '../queue/selectors';
 type Props = {
   tracks: Track[];
   hiddenColumn?: ColumnName;
+  disableJumpBar?: boolean;
 };
 
-export default function Tracks({ tracks, hiddenColumn }: Props) {
+export default function Tracks({
+  tracks,
+  hiddenColumn,
+  disableJumpBar,
+}: Props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -28,6 +33,7 @@ export default function Tracks({ tracks, hiddenColumn }: Props) {
       onAddToQueue={(track) => dispatch(addToWaitlist(track))}
       hiddenColumns={hiddenColumn && [hiddenColumn]}
       currentlyPlaying={currentTrackId}
+      disableJumpBar={disableJumpBar}
     />
   );
 }

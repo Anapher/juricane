@@ -4,7 +4,7 @@ import _ from 'lodash';
 import path from 'node:path';
 import { CategoryInfo, TrackDb } from 'renderer/types';
 import { normalizePath } from '../path-utils';
-import parseM3uFile, { M3uTrack } from './m3u-parser';
+import { M3uTrack, parseM3uFile } from './m3u-parser';
 
 export type M3uPlaylist = {
   path: string;
@@ -42,7 +42,8 @@ export default async function loadAllPlaylistsFromDirectory(
 export function createCategoryInfoForPlaylists(
   playlists: M3uPlaylist[],
   db: TrackDb,
-  baseDir: string
+  baseDir: string,
+  sortTracks: boolean = true
 ): CategoryInfo[] {
   const tracksIndex = new Map<string, [number, boolean]>();
   db.tracks.forEach((v) => {
@@ -61,7 +62,7 @@ export function createCategoryInfoForPlaylists(
     trackIds: _(tracks)
       .map((x) => tracksIndex.get(x.path)?.[0])
       .filter((x): x is number => x !== undefined)
-      .sortBy((x) => db.tracks[x].title)
+      .sortBy((x, iX) => (sortTracks ? db.tracks[x].title : iX))
       .value(),
     group: path.basename(path.dirname(p)),
   }));

@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import _ from 'lodash';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, ReactNode } from 'react';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { CategoryInfo } from 'renderer/types';
 import TrackListPreview from '../track-list-preview/TrackListPreview';
@@ -22,6 +22,7 @@ type Props = {
   onNavigateToGroup: (group: CategoryInfo) => void;
   groupSelector: _.ValueIteratee<CategoryInfo>;
   showJumpBar?: boolean;
+  mapCustomCardContent?: (id: string) => ReactNode | undefined;
 };
 
 export const createData = (
@@ -56,6 +57,7 @@ export default function GroupedTracks({
   onNavigateToGroup,
   groupSelector,
   showJumpBar,
+  mapCustomCardContent,
 }: Props) {
   const { groupedChunks, groupCounts, groups } = useMemo(
     () => createData(items, groupSelector),
@@ -121,23 +123,25 @@ export default function GroupedTracks({
                     display: 'flex',
                   }}
                 >
-                  <CardActionArea
-                    sx={{ flex: 1 }}
-                    onClick={() => onNavigateToGroup(group)}
-                  >
-                    <CardMedia>
-                      <TrackListPreview images={group.previewImageTrackIds} />
-                    </CardMedia>
-                    <CardContent>
-                      <Typography
-                        gutterBottom
-                        sx={{ fontSize: { xs: 14, xl: 18 } }}
-                        component="div"
-                      >
-                        {group.name}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
+                  {mapCustomCardContent?.(group.id) || (
+                    <CardActionArea
+                      sx={{ flex: 1 }}
+                      onClick={() => onNavigateToGroup(group)}
+                    >
+                      <CardMedia>
+                        <TrackListPreview images={group.previewImageTrackIds} />
+                      </CardMedia>
+                      <CardContent>
+                        <Typography
+                          gutterBottom
+                          sx={{ fontSize: { xs: 14, xl: 18 } }}
+                          component="div"
+                        >
+                          {group.name}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  )}
                 </Card>
               ))}
               {chunk.length !== GROUPS_PER_ROW && (

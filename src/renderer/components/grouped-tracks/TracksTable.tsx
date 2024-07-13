@@ -2,28 +2,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
-import {
-  Box,
-  Chip,
-  Fab,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  styled,
-  useTheme,
-} from '@mui/material';
+import { Box, Chip, Fab, TableCell, TableRow } from '@mui/material';
 import { TFunction } from 'i18next';
 import _ from 'lodash';
-import React, { useRef } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TableComponents, TableVirtuoso } from 'react-virtuoso';
 import { Track } from 'renderer/types';
 import TrackImage from '../tracks/TrackImage';
-import AlphabeticJumpBar from './AlphabeticJumpBar';
+import VirtualizedJumpTable from './VirtualizedJumpTable';
 
 export type ColumnName = 'title' | 'artist' | 'duration' | 'album' | 'genre';
 
@@ -42,6 +28,7 @@ export type ConfigProps = {
 
 type Props = ConfigProps & {
   tracks: Track[];
+  disableJumpBar?: boolean;
 };
 
 type Column = {
@@ -154,27 +141,6 @@ function createFixedHeaderContent({ hiddenColumns }: ConfigProps) {
   };
 }
 
-const VirtuosoTableComponents: TableComponents<Track> = {
-  Scroller: React.forwardRef<HTMLDivElement>((props, ref) => (
-    <TableContainer component={Paper} {...props} ref={ref} />
-  )),
-  Table: (props) => (
-    <Table
-      {...props}
-      sx={{
-        borderCollapse: 'separate',
-        tableLayout: 'fixed',
-        backgroundColor: 'transparent',
-      }}
-    />
-  ),
-  TableHead,
-  TableRow: ({ ...props }) => <TableRow {...props} />,
-  TableBody: React.forwardRef<HTMLTableSectionElement>((props, ref) => (
-    <TableBody {...props} ref={ref} />
-  )),
-};
-
 function rowContent(
   _index: number,
   row: Track,
@@ -235,56 +201,21 @@ function rowContent(
   );
 }
 
-const createJumpTable = (tracks: Track[]) => {
-  const jumpTable: Record<string, number> = {};
-
-  let lastBeginLetter = '';
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < tracks.length; ++i) {
-    const track = tracks[i];
-
-    const startLetter = track.title[0].toUpperCase();
-    if (lastBeginLetter !== startLetter) {
-      lastBeginLetter = startLetter;
-      jumpTable[startLetter] = i;
-    }
-  }
-
-  return jumpTable;
-};
-
-const NoScrollbarTable = styled(TableVirtuoso)({
-  '::-webkit-scrollbar': { display: 'none' },
-});
-
-export default function TracksTable({ tracks, ...configProps }: Props) {
-  const theme = useTheme();
+export default function TracksTable({
+  tracks,
+  disableJumpBar,
+  ...configProps
+}: Props) {
   const { t } = useTranslation();
-  const virtuoso = useRef(null);
-  const jumpTable = createJumpTable(tracks);
-
-  const handleScroll = (index: number) => {
-    (virtuoso.current as any)?.scrollToIndex({
-      index,
-    });
-  };
 
   return (
-    <Box display="flex" flexDirection="row" flex={1} width="100%" height="100%">
-      <NoScrollbarTable
-        ref={virtuoso}
-        data={tracks}
-        // @ts-ignore
-        components={VirtuosoTableComponents}
-        fixedHeaderContent={createFixedHeaderContent(configProps)}
-        // @ts-ignore
-        itemContent={(index, data) => rowContent(index, data, configProps, t)}
-        style={{ borderRadius: theme.shape.borderRadius * 2, flex: 1 }}
-      />
-      <AlphabeticJumpBar
-        groups={Object.keys(jumpTable)}
-        handleScroll={(index) => handleScroll(Object.values(jumpTable)[index])}
-      />
-    </Box>
+    <VirtualizedJumpTable
+      items={tracks}
+      getItemName={(track) => track.title}
+      fixedHeaderContent={createFixedHeaderContent(configProps)}
+      // @ts-ignore
+      itemContent={(index, data) => rowContent(index, data, configProps, t)}
+      disableJumpBar={disableJumpBar}
+    />
   );
 }

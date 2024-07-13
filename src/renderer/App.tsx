@@ -22,6 +22,7 @@ import AllTracks from './components/tracks/AllTracks';
 import './sagas/music-player-saga';
 import { setCurrentPlaylist } from './slices/music-player-slice';
 import Playlists from './components/playlists/Playlists';
+import OwnPlaylist from './components/playlists/OwnPlaylist';
 
 const darkTheme = createTheme({
   palette: {
@@ -62,6 +63,9 @@ function AppRoutes() {
             <Route path="playing" element={<CurrentTrackCover />} />
             <Route path="playlists">
               <Route index element={<Playlists />} />
+              <Route path="own">
+                <Route path=":id" element={<OwnPlaylist />} />
+              </Route>
               <Route
                 path=":id"
                 element={

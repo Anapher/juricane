@@ -2,7 +2,7 @@
 /* eslint no-unused-vars: off */
 import Config from 'config';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { MusicLibrary } from 'renderer/types';
+import { MusicLibrary, OwnPlaylist } from 'renderer/types';
 
 export type Channels = 'ipc-example' | 'open-playlists';
 
@@ -28,6 +28,24 @@ const electronHandler = {
     },
     loadMusicLibrary(config: Config): Promise<MusicLibrary> {
       return ipcRenderer.invoke('files:loadLibrary', config);
+    },
+    loadOwnPlaylists(
+      config: Config,
+      library: MusicLibrary
+    ): Promise<OwnPlaylist[]> {
+      return ipcRenderer.invoke('files:loadOwnPlaylists', config, library);
+    },
+    updateOwnPlaylist(
+      config: Config,
+      playlist: OwnPlaylist,
+      library: MusicLibrary
+    ) {
+      return ipcRenderer.invoke(
+        'files:updateOwnPlaylist',
+        config,
+        playlist,
+        library
+      );
     },
   },
 };

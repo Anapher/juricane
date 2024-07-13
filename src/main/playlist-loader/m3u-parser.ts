@@ -23,7 +23,7 @@ function parsePlaylistEntry(lines: [string, string]): M3uTrack {
   };
 }
 
-export default function parseM3uFile(content: string): M3uTrack[] {
+export function parseM3uFile(content: string): M3uTrack[] {
   const lines = content.split(/\r|\n/).filter((x) => Boolean(x));
 
   if (lines[0] !== HEADER) {
@@ -33,4 +33,13 @@ export default function parseM3uFile(content: string): M3uTrack[] {
   return Array.from({ length: (lines.length - 1) / 2 }).map((_, i) =>
     parsePlaylistEntry([lines[i * 2 + 1], lines[i * 2 + 2]])
   );
+}
+
+export function createM3uFile(tracks: M3uTrack[]): string {
+  let result = HEADER;
+  tracks.forEach((track) => {
+    result += `\n#EXTINF:${track.durationInSeconds},${track.title}\n${track.path}`;
+  });
+
+  return result;
 }

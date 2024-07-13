@@ -1,5 +1,6 @@
 import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 import { Track } from 'renderer/types';
+import { reorder } from 'renderer/utils/dragndrop';
 
 type CurrentPlaylist = {
   id: number;
@@ -21,14 +22,6 @@ const initialState: MusicPlayerState = {
   playedTracksHistory: [],
   waitlist: [],
   libraryPath: null,
-};
-
-const reorder = (list: Track[], startIndex: number, endIndex: number) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
 };
 
 export const musicPlayerSlice = createSlice({
@@ -64,6 +57,16 @@ export const musicPlayerSlice = createSlice({
     ) {
       state.waitlist = reorder(state.waitlist, startIndex, endIndex);
     },
+    replaceWaitlist(state, { payload }: PayloadAction<Track[]>) {
+      if (payload.length > 0) {
+        state.currentTrack = payload[0];
+        state.playedTracksHistory = [
+          payload[0].id,
+          ...state.playedTracksHistory,
+        ];
+      }
+      state.waitlist = payload.slice(1);
+    },
   },
 });
 
@@ -76,6 +79,7 @@ export const {
   setCurrentTrack,
   removeFromWaitlist,
   waitlistReorder,
+  replaceWaitlist,
 } = musicPlayerSlice.actions;
 
 export default musicPlayerSlice.reducer;
