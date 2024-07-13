@@ -59,6 +59,7 @@ export const musicPlayerSlice = createSlice({
     },
     replaceWaitlist(state, { payload }: PayloadAction<Track[]>) {
       if (payload.length > 0) {
+        // eslint-disable-next-line prefer-destructuring
         state.currentTrack = payload[0];
         state.playedTracksHistory = [
           payload[0].id,
