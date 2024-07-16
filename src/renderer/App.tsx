@@ -1,4 +1,7 @@
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { de } from 'date-fns/locale/de';
 import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider, useDispatch } from 'react-redux';
@@ -17,12 +20,13 @@ import CategoryGroupPage from './components/category/CategoryGroupPage';
 import CategoryTracksPage from './components/category/CategoryTracksPage';
 import Main from './components/main/Main';
 import NotLoadedScreen from './components/not-loaded/NotLoadedScreen';
+import OwnPlaylist from './components/playlists/OwnPlaylist';
+import Playlists from './components/playlists/Playlists';
+import useScheduledOwnPlaylist from './components/playlists/useScheduledOwnPlaylist';
 import CurrentTrackCover from './components/queue/CurrentTrackCover';
 import AllTracks from './components/tracks/AllTracks';
 import './sagas/music-player-saga';
 import { setCurrentPlaylist } from './slices/music-player-slice';
-import Playlists from './components/playlists/Playlists';
-import OwnPlaylist from './components/playlists/OwnPlaylist';
 
 const darkTheme = createTheme({
   palette: {
@@ -50,90 +54,93 @@ function AppRoutes() {
   }, [defaultPlaylist, data, dispatch]);
 
   const audioPlayer = useAudioPlayer();
+  useScheduledOwnPlaylist();
 
   if (!isFetched) {
     return <NotLoadedScreen />;
   }
 
   return (
-    <AudioPlayerContext.Provider value={audioPlayer}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Main />}>
-            <Route path="playing" element={<CurrentTrackCover />} />
-            <Route path="playlists">
-              <Route index element={<Playlists />} />
-              <Route path="own">
-                <Route path=":id" element={<OwnPlaylist />} />
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
+      <AudioPlayerContext.Provider value={audioPlayer}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Main />}>
+              <Route path="playing" element={<CurrentTrackCover />} />
+              <Route path="playlists">
+                <Route index element={<Playlists />} />
+                <Route path="own">
+                  <Route path=":id" element={<OwnPlaylist />} />
+                </Route>
+                <Route
+                  path=":id"
+                  element={
+                    <CategoryTracksPage
+                      playlist
+                      selectCategoryInfo={(library, id) =>
+                        library.playlists[Number(id)]
+                      }
+                    />
+                  }
+                />
               </Route>
-              <Route
-                path=":id"
-                element={
-                  <CategoryTracksPage
-                    playlist
-                    selectCategoryInfo={(library, id) =>
-                      library.playlists[Number(id)]
-                    }
-                  />
-                }
-              />
+              <Route path="tracks" element={<AllTracks />} />
+              <Route path="artists">
+                <Route
+                  index
+                  element={
+                    <CategoryGroupPage categorySelector={(x) => x.artists} />
+                  }
+                />
+                <Route
+                  path=":id"
+                  element={
+                    <CategoryTracksPage
+                      selectCategoryInfo={(library, id) =>
+                        library.artists[encodeURIComponent(id)]
+                      }
+                    />
+                  }
+                />
+              </Route>
+              <Route path="genres">
+                <Route
+                  index
+                  element={
+                    <CategoryGroupPage categorySelector={(x) => x.genres} />
+                  }
+                />
+                <Route
+                  path=":id"
+                  element={
+                    <CategoryTracksPage
+                      selectCategoryInfo={(library, id) =>
+                        library.genres[encodeURIComponent(id)]
+                      }
+                      hiddenColumn="genre"
+                    />
+                  }
+                />
+              </Route>
+              <Route path="albums">
+                <Route
+                  path=":id"
+                  element={
+                    <CategoryTracksPage
+                      selectCategoryInfo={(library, id) =>
+                        library.albums[encodeURIComponent(id)]
+                      }
+                      hiddenColumn="album"
+                    />
+                  }
+                />
+              </Route>
+              <Route index element={<Navigate to="/playing" replace />} />
             </Route>
-            <Route path="tracks" element={<AllTracks />} />
-            <Route path="artists">
-              <Route
-                index
-                element={
-                  <CategoryGroupPage categorySelector={(x) => x.artists} />
-                }
-              />
-              <Route
-                path=":id"
-                element={
-                  <CategoryTracksPage
-                    selectCategoryInfo={(library, id) =>
-                      library.artists[encodeURIComponent(id)]
-                    }
-                  />
-                }
-              />
-            </Route>
-            <Route path="genres">
-              <Route
-                index
-                element={
-                  <CategoryGroupPage categorySelector={(x) => x.genres} />
-                }
-              />
-              <Route
-                path=":id"
-                element={
-                  <CategoryTracksPage
-                    selectCategoryInfo={(library, id) =>
-                      library.genres[encodeURIComponent(id)]
-                    }
-                    hiddenColumn="genre"
-                  />
-                }
-              />
-            </Route>
-            <Route path="albums">
-              <Route
-                path=":id"
-                element={
-                  <CategoryTracksPage
-                    selectCategoryInfo={(library, id) =>
-                      library.albums[encodeURIComponent(id)]
-                    }
-                    hiddenColumn="album"
-                  />
-                }
-              />
-            </Route>
-            <Route index element={<Navigate to="/playing" replace />} />
-          </Route>
-        </Routes>
-      </Router>
-    </AudioPlayerContext.Provider>
+          </Routes>
+        </Router>
+      </AudioPlayerContext.Provider>
+    </LocalizationProvider>
   );
 }
 

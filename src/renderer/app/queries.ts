@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { OwnPlaylist } from 'renderer/types';
+import { OwnPlaylist, OwnPlaylistConfig } from 'renderer/types';
 
 export const useConfig = () => {
   return useQuery(
@@ -102,6 +102,43 @@ export const useDefaultPlaylist = () => {
   }
 
   return defaultPlaylist;
+};
+
+export const useOwnPlaylistConfig = () => {
+  const { data: config } = useConfig();
+
+  return useQuery(
+    ['ownPlaylistConfig'],
+    () => {
+      if (!config) {
+        throw new Error('no config');
+      }
+      return window.electron.ipcRenderer.loadOwnPlaylistConfig(config);
+    },
+    {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      enabled: !!config,
+    }
+  );
+};
+
+export const useSaveOwnPlaylistConfig = () => {
+  const { data: config } = useConfig();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: OwnPlaylistConfig) => {
+      if (!config) {
+        throw new Error('no config');
+      }
+      return window.electron.ipcRenderer.saveOwnPlaylistConfig(config, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries('ownPlaylistConfig');
+    },
+  });
 };
 
 export default null;

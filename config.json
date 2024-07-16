@@ -18,5 +18,6 @@
     ","
   ],
   "adminModeTimeoutSeconds": 30,
-  "backToWaitlistTimeoutSeconds": 60
+  "backToWaitlistTimeoutSeconds": 60,
+  "playOwnPlaylistNowDelaySeconds": 10
 }

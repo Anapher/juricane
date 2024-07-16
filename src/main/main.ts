@@ -12,13 +12,18 @@ import Config from 'config';
 import { BrowserWindow, app, dialog, ipcMain, shell } from 'electron';
 import fs from 'fs/promises';
 import path from 'path';
-import { MusicLibrary, OwnPlaylist, TrackDb } from 'renderer/types';
+import {
+  MusicLibrary,
+  OwnPlaylist,
+  OwnPlaylistConfig,
+  TrackDb,
+} from 'renderer/types';
 import buildTrackDb, { loadTrackDb } from './db-builder/track-db-builder';
+import { writeOwnPlaylist } from './playlist-loader/own-playlists';
 import loadAllPlaylistsFromDirectory, {
   createCategoryInfoForPlaylists,
 } from './playlist-loader/playlist-loader';
 import { resolveHtmlPath } from './utils';
-import { writeOwnPlaylist } from './playlist-loader/own-playlists';
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -119,6 +124,24 @@ ipcMain.handle(
       name: x.name,
       trackIds: x.trackIds,
     }));
+  }
+);
+
+ipcMain.handle('files:loadOwnPlaylistConfig', async (event, config: Config) => {
+  try {
+    const p = path.join(config.ownPlaylistDirectory, 'config.json');
+    return JSON.parse(await fs.readFile(p, 'utf-8'));
+  } catch (error) {
+    const defaultValue: OwnPlaylistConfig = { scheduledPlaylists: [] };
+    return defaultValue;
+  }
+});
+
+ipcMain.handle(
+  'files:saveOwnPlaylistConfig',
+  async (event, config: Config, data: OwnPlaylistConfig) => {
+    const p = path.join(config.ownPlaylistDirectory, 'config.json');
+    await fs.writeFile(p, JSON.stringify(data), 'utf-8');
   }
 );
 

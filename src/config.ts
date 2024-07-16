@@ -10,6 +10,7 @@ type Config = {
   genreSeparators: string[];
   adminModeTimeoutSeconds: number | undefined;
   backToWaitlistTimeoutSeconds: number | undefined;
+  playOwnPlaylistNowDelaySeconds: number;
 };
 
 export default Config;

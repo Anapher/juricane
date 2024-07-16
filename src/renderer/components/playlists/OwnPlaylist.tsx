@@ -1,19 +1,49 @@
-import { Box, Button, ButtonGroup, Paper, Typography } from '@mui/material';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import {
+  Box,
+  Button,
+  ButtonGroup,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Paper,
+  Typography,
+} from '@mui/material';
+import { StaticTimePicker } from '@mui/x-date-pickers';
+import {
+  addDays,
+  addHours,
+  addSeconds,
+  formatDistanceToNow,
+  formatISO,
+  isPast,
+} from 'date-fns';
+import { de } from 'date-fns/locale';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useConfig,
   useMusicLibrary,
+  useOwnPlaylistConfig,
   useOwnPlaylists,
+  useSaveOwnPlaylistConfig,
   useUpdateOwnPlaylist,
 } from 'renderer/app/queries';
-import { replaceWaitlist } from 'renderer/slices/music-player-slice';
 import Tracks from '../tracks/Tracks';
 import EditOwnPlaylistDialog from './EditOwnPlaylistDialog';
+
+function getTimeInFuture(date: Date) {
+  if (isPast(date)) {
+    return addDays(date, 1);
+  }
+  return date;
+}
 
 export default function OwnPlaylist() {
   const { id } = useParams();
 
+  const { data: config } = useConfig();
   const { data: library } = useMusicLibrary();
   const { data: ownPlaylists } = useOwnPlaylists();
 
@@ -23,13 +53,16 @@ export default function OwnPlaylist() {
   };
 
   const updatePlaylist = useUpdateOwnPlaylist();
-  const dispatch = useDispatch();
+  const { data: playlistConfig } = useOwnPlaylistConfig();
+  const playlistConfigMutation = useSaveOwnPlaylistConfig();
+  const [playDialogOpen, setPlayDialogOpen] = useState(false);
+  const [scheduledPlaylistOpen, setScheduledPlaylistOpen] = useState(false);
+  const [selectedScheduledDate, setSelectedScheduledDate] =
+    useState<Date | null>(new Date());
 
-  if (!ownPlaylists) {
-    return null;
-  }
+  const navigate = useNavigate();
 
-  if (!library) {
+  if (!ownPlaylists || !library || !playlistConfig) {
     return null;
   }
 
@@ -47,10 +80,25 @@ export default function OwnPlaylist() {
     .map((x) => library.tracks[x])
     .filter((x) => !!x);
 
-  const handlePlay = () => {
-    dispatch(
-      replaceWaitlist(ownPlaylist.trackIds.map((x) => library.tracks[x]))
-    );
+  const handlePlay = (playAt: Date) => {
+    playlistConfigMutation.mutate({
+      ...playlistConfig,
+      scheduledPlaylists: [
+        ...playlistConfig.scheduledPlaylists.filter(
+          (x) => x.name !== ownPlaylist.name
+        ),
+        {
+          name: ownPlaylist.name,
+          scheduledTime: formatISO(playAt),
+        },
+      ],
+    });
+    navigate('/');
+  };
+
+  const handleOpenTimerDialog = () => {
+    setScheduledPlaylistOpen(true);
+    setSelectedScheduledDate(addHours(new Date(), 1));
   };
 
   return (
@@ -67,8 +115,8 @@ export default function OwnPlaylist() {
           {ownPlaylist.name}
         </Typography>
         <ButtonGroup size="small" variant="contained">
-          <Button onClick={handlePlay}>Abspielen</Button>
-          <Button>Timer</Button>
+          <Button onClick={() => setPlayDialogOpen(true)}>Abspielen</Button>
+          <Button onClick={handleOpenTimerDialog}>Timer</Button>
           <Button onClick={handleEditPlaylist}>Bearbeiten</Button>
         </ButtonGroup>
       </Box>
@@ -81,6 +129,68 @@ export default function OwnPlaylist() {
       <Paper sx={{ flex: 1, mt: 1, borderRadius: 3 }} elevation={6}>
         <Tracks tracks={tracks} disableJumpBar />
       </Paper>
+      <Dialog open={playDialogOpen} onClose={() => setPlayDialogOpen(false)}>
+        <DialogTitle>Playlist planen</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Bist du sicher, dass du in{' '}
+            <b>{config?.playOwnPlaylistNowDelaySeconds} Sekunden</b> die
+            Warteschlange durch die Songs aus der Playlist {ownPlaylist.name}{' '}
+            ersetzen willst?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPlayDialogOpen(false)}>Abbrechen</Button>
+          <Button
+            onClick={() =>
+              handlePlay(
+                addSeconds(
+                  new Date(),
+                  config?.playOwnPlaylistNowDelaySeconds ?? 10
+                )
+              )
+            }
+            autoFocus
+          >
+            Abspielen
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={scheduledPlaylistOpen}
+        onClose={() => setScheduledPlaylistOpen(false)}
+      >
+        <DialogTitle>Playlist abspielen</DialogTitle>
+        <DialogContent>
+          <StaticTimePicker
+            autoFocus
+            sx={{ backgroundColor: 'transparent' }}
+            ampm={false}
+            localeText={{ toolbarTitle: '' }}
+            slots={{ actionBar: () => null }}
+            value={selectedScheduledDate}
+            onChange={(value) => setSelectedScheduledDate(value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setScheduledPlaylistOpen(false)}>
+            Abbrechen
+          </Button>
+          <Button
+            onClick={() =>
+              handlePlay(getTimeInFuture(selectedScheduledDate || new Date()))
+            }
+            disabled={!selectedScheduledDate}
+          >
+            In{' '}
+            {selectedScheduledDate &&
+              formatDistanceToNow(getTimeInFuture(selectedScheduledDate), {
+                locale: de,
+              })}{' '}
+            abspielen
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

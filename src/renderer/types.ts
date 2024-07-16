@@ -32,4 +32,13 @@ export type OwnPlaylist = {
   trackIds: number[];
 };
 
+export type ScheduledOwnPlaylist = {
+  name: string;
+  scheduledTime: string;
+};
+
+export type OwnPlaylistConfig = {
+  scheduledPlaylists: ScheduledOwnPlaylist[];
+};
+
 export type MusicLibrary = TrackDb & { playlists: CategoryInfo[] };
