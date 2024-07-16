@@ -15,6 +15,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     'react/require-default-props': 'off',
     'react/destructuring-assignment': 'off',
+    'consistent-return': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,
