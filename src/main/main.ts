@@ -19,7 +19,10 @@ import {
   TrackDb,
 } from 'renderer/types';
 import buildTrackDb, { loadTrackDb } from './db-builder/track-db-builder';
-import { writeOwnPlaylist } from './playlist-loader/own-playlists';
+import {
+  deleteOwnPlaylist,
+  writeOwnPlaylist,
+} from './playlist-loader/own-playlists';
 import loadAllPlaylistsFromDirectory, {
   createCategoryInfoForPlaylists,
 } from './playlist-loader/playlist-loader';
@@ -103,6 +106,13 @@ ipcMain.handle(
     library: MusicLibrary
   ) => {
     await writeOwnPlaylist(config.ownPlaylistDirectory, playlist, library);
+  }
+);
+
+ipcMain.handle(
+  'files:deleteOwnPlaylist',
+  async (event, config: Config, playlistName: string) => {
+    await deleteOwnPlaylist(config.ownPlaylistDirectory, playlistName);
   }
 );
 

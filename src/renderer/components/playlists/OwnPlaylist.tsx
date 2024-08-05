@@ -20,10 +20,11 @@ import {
   isPast,
 } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   useConfig,
+  useDeleteOwnPlaylist,
   useMusicLibrary,
   useOwnPlaylistConfig,
   useOwnPlaylists,
@@ -53,6 +54,7 @@ export default function OwnPlaylist() {
   };
 
   const updatePlaylist = useUpdateOwnPlaylist();
+  const deletePlaylist = useDeleteOwnPlaylist();
   const { data: playlistConfig } = useOwnPlaylistConfig();
   const playlistConfigMutation = useSaveOwnPlaylistConfig();
   const [playDialogOpen, setPlayDialogOpen] = useState(false);
@@ -62,11 +64,23 @@ export default function OwnPlaylist() {
 
   const navigate = useNavigate();
 
+  const ownPlaylist = ownPlaylists?.find((x) => x.name === id);
+  const ownPlaylistRef = useRef(ownPlaylist);
+  ownPlaylistRef.current = ownPlaylist;
+
+  useEffect(() => {
+    return () => {
+      if (ownPlaylistRef.current?.trackIds.length === 0) {
+        deletePlaylist.mutate(ownPlaylistRef.current.name);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!ownPlaylists || !library || !playlistConfig) {
     return null;
   }
 
-  const ownPlaylist = ownPlaylists.find((x) => x.name === id);
   if (!ownPlaylist) {
     return null;
   }

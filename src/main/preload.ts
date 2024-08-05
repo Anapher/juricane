@@ -47,6 +47,13 @@ const electronHandler = {
         library
       );
     },
+    deleteOwnPlaylist(config: Config, playlistName: string) {
+      return ipcRenderer.invoke(
+        'files:deleteOwnPlaylist',
+        config,
+        playlistName
+      );
+    },
     loadOwnPlaylistConfig(config: Config): Promise<OwnPlaylistConfig> {
       return ipcRenderer.invoke('files:loadOwnPlaylistConfig', config);
     },

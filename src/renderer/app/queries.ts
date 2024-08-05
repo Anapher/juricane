@@ -61,6 +61,23 @@ export const useUpdateOwnPlaylist = () => {
   });
 };
 
+export const useDeleteOwnPlaylist = () => {
+  const { data: config } = useConfig();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (name: string) => {
+      if (!config) {
+        throw new Error('no config');
+      }
+      return window.electron.ipcRenderer.deleteOwnPlaylist(config, name);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries('ownPlaylists');
+    },
+  });
+};
+
 export const useOwnPlaylists = () => {
   const { data: config } = useConfig();
   const { data: library } = useMusicLibrary();
