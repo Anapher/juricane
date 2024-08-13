@@ -8,7 +8,7 @@ import {
   useOwnPlaylists,
   useSaveOwnPlaylistConfig,
 } from 'renderer/app/queries';
-import { replaceWaitlist } from 'renderer/slices/music-player-slice';
+import { enqueueTracksAndPlayFirst } from 'renderer/slices/music-player-slice';
 import { OwnPlaylist, OwnPlaylistConfig } from 'renderer/types';
 
 export function getNextScheduledPlaylist(
@@ -59,7 +59,7 @@ export default function useScheduledOwnPlaylist() {
         ),
       });
       dispatch(
-        replaceWaitlist(
+        enqueueTracksAndPlayFirst(
           nextScheduled.playlist!.trackIds.map((x) => library.tracks[x])
         )
       );

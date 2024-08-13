@@ -57,7 +57,7 @@ export const musicPlayerSlice = createSlice({
     ) {
       state.waitlist = reorder(state.waitlist, startIndex, endIndex);
     },
-    replaceWaitlist(state, { payload }: PayloadAction<Track[]>) {
+    enqueueTracksAndPlayFirst(state, { payload }: PayloadAction<Track[]>) {
       if (payload.length > 0) {
         // eslint-disable-next-line prefer-destructuring
         state.currentTrack = payload[0];
@@ -66,7 +66,11 @@ export const musicPlayerSlice = createSlice({
           ...state.playedTracksHistory,
         ];
       }
-      state.waitlist = payload.slice(1);
+      const payloadTrackIds = new Set(payload.map((x) => x.id));
+      state.waitlist = [
+        ...payload.slice(1),
+        ...state.waitlist.filter((x) => !payloadTrackIds.has(x.id)),
+      ];
     },
   },
 });
@@ -80,7 +84,7 @@ export const {
   setCurrentTrack,
   removeFromWaitlist,
   waitlistReorder,
-  replaceWaitlist,
+  enqueueTracksAndPlayFirst,
 } = musicPlayerSlice.actions;
 
 export default musicPlayerSlice.reducer;
