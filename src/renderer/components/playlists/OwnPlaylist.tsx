@@ -16,8 +16,10 @@ import {
   addHours,
   addSeconds,
   formatDistanceToNow,
+  formatDistanceToNowStrict,
   formatISO,
   isPast,
+  parseISO,
 } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useEffect, useRef, useState } from 'react';
@@ -39,6 +41,29 @@ function getTimeInFuture(date: Date) {
     return addDays(date, 1);
   }
   return date;
+}
+
+function RelativeTime({ scheduledTime }: { scheduledTime: string }) {
+  const [result, setResult] = useState(
+    formatDistanceToNowStrict(parseISO(scheduledTime), {
+      locale: de,
+    })
+  );
+
+  useEffect(() => {
+    const token = setInterval(() => {
+      setResult(
+        formatDistanceToNowStrict(parseISO(scheduledTime), {
+          locale: de,
+        })
+      );
+    }, 1000);
+    return () => {
+      clearInterval(token);
+    };
+  }, [scheduledTime]);
+
+  return result;
 }
 
 export default function OwnPlaylist() {
@@ -77,13 +102,13 @@ export default function OwnPlaylist() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!ownPlaylists || !library || !playlistConfig) {
+  if (!ownPlaylists || !library || !playlistConfig || !ownPlaylist) {
     return null;
   }
 
-  if (!ownPlaylist) {
-    return null;
-  }
+  const scheduleConfig = playlistConfig.scheduledPlaylists.find(
+    (x) => x.name === ownPlaylist.name
+  );
 
   const handleUpdatePlaylist = (trackIds: number[]) => {
     updatePlaylist.mutate({ name: ownPlaylist.name, trackIds });
@@ -110,6 +135,17 @@ export default function OwnPlaylist() {
     navigate('/');
   };
 
+  const handleRemoveFromSchedule = () => {
+    playlistConfigMutation.mutate({
+      ...playlistConfig,
+      scheduledPlaylists: [
+        ...playlistConfig.scheduledPlaylists.filter(
+          (x) => x.name !== ownPlaylist.name
+        ),
+      ],
+    });
+  };
+
   const handleOpenTimerDialog = () => {
     setScheduledPlaylistOpen(true);
     setSelectedScheduledDate(addHours(new Date(), 1));
@@ -128,10 +164,21 @@ export default function OwnPlaylist() {
         <Typography variant="h6" align="center">
           {ownPlaylist.name}
         </Typography>
+        {scheduleConfig && (
+          <Typography variant="caption">
+            Spielt automatisch in{' '}
+            <RelativeTime scheduledTime={scheduleConfig.scheduledTime} />
+          </Typography>
+        )}
         <ButtonGroup size="small" variant="contained">
           <Button onClick={() => setPlayDialogOpen(true)}>Abspielen</Button>
           <Button onClick={handleOpenTimerDialog}>Timer</Button>
           <Button onClick={handleEditPlaylist}>Bearbeiten</Button>
+          {scheduleConfig && (
+            <Button color="secondary" onClick={handleRemoveFromSchedule}>
+              Timer löschen
+            </Button>
+          )}
         </ButtonGroup>
       </Box>
       <EditOwnPlaylistDialog

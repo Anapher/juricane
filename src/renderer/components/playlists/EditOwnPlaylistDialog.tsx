@@ -1,3 +1,4 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import {
   Box,
   Button,
@@ -5,7 +6,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
+  InputAdornment,
   Paper,
+  TextField,
   Typography,
 } from '@mui/material';
 import _ from 'lodash';
@@ -14,6 +18,7 @@ import { OnDragEndResponder } from 'react-beautiful-dnd';
 import { useMusicLibrary } from 'renderer/app/queries';
 import { OwnPlaylist, Track } from 'renderer/types';
 import { reorder } from 'renderer/utils/dragndrop';
+import useFilteredTracks from 'renderer/utils/useFilteredTracks';
 import QueueList from '../queue/QueueList';
 import EditOwnPlaylistTrackSelection from './EditOwnPlaylistTrackSelection';
 
@@ -41,6 +46,8 @@ export default function EditOwnPlaylistDialog({
     () => library?.tracks && _.sortBy(library?.tracks, (x) => x.title),
     [library?.tracks]
   );
+  const [searchText, setSearchText] = useState('');
+  const filteredTracks = useFilteredTracks(sortedTracks, searchText);
 
   if (!library) {
     return null;
@@ -79,12 +86,31 @@ export default function EditOwnPlaylistDialog({
       <DialogContent
         sx={{ display: 'flex', flexDirection: 'row', flex: 1, height: '100%' }}
       >
-        <Box flex={2}>
-          <EditOwnPlaylistTrackSelection
-            tracks={sortedTracks || []}
-            onAddTrack={handleAddTrack}
-            addedTracks={tracks}
+        <Box flex={2} display="flex" flexDirection="column">
+          <TextField
+            fullWidth
+            size="small"
+            sx={{ mb: 1 }}
+            value={searchText}
+            placeholder="Songsuche..."
+            onChange={(ev) => setSearchText(ev.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setSearchText('')}>
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
+          <Box flex={1} mt={1}>
+            <EditOwnPlaylistTrackSelection
+              tracks={filteredTracks || []}
+              onAddTrack={handleAddTrack}
+              addedTracks={tracks}
+            />
+          </Box>
         </Box>
         <Paper
           sx={{

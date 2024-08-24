@@ -86,7 +86,7 @@ export default function GroupedTracks({
     : GroupedVirtuoso;
 
   return (
-    <Box flex={1} display="flex" width="100%" my={2}>
+    <Box flex={1} display="flex" width="100%" my={2} mx={1}>
       <ListComponent
         ref={virtuoso}
         groupCounts={groupCounts}

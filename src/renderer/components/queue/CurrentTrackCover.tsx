@@ -46,7 +46,7 @@ export default function CurrentTrackCover() {
           {currentTrack.album && (
             <Box
               display="flex"
-              sx={{ mt: 4 }}
+              sx={{ mt: 2 }}
               flexDirection="column"
               alignItems="center"
             >
