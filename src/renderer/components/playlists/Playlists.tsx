@@ -44,6 +44,7 @@ export default function Playlists() {
 
   return (
     <GroupedTracks
+      sortGroupsBy={[(x) => x[0] !== OWN_PLAYLIST_GROUP, (x) => x]}
       items={[
         ...playlists,
         ...(ownPlaylists || []).map<CategoryInfo>((x) => ({

@@ -23,26 +23,34 @@ type Props = {
   groupSelector: _.ValueIteratee<CategoryInfo>;
   showJumpBar?: boolean;
   mapCustomCardContent?: (id: string) => ReactNode | undefined;
+  sortGroupsBy?: _.Many<_.ListIteratee<[string, CategoryInfo[][][]]>>;
 };
 
 export const createData = (
   items: CategoryInfo[],
-  propSelector: _.ValueIteratee<CategoryInfo>
+  propSelector: _.ValueIteratee<CategoryInfo>,
+  sortGroupsBy: _.Many<_.ListIteratee<[string, CategoryInfo[][][]]>>
 ) => {
   const sortedItems = _.sortBy(items, (x) => x.name);
   const groupedItems = _.groupBy(sortedItems, propSelector);
-  const groupedChunks = Object.fromEntries(
+
+  // @ts-ignore
+  const groupedChunks = _.sortBy(
     Object.entries(groupedItems).map(([k, v]) => [
       k,
       _.chunk(v, GROUPS_PER_ROW),
-    ])
+    ]) as [string, CategoryInfo[][][]],
+    sortGroupsBy
   );
 
-  const groupCounts = Object.values(groupedChunks).map((x) => x.length);
-  const groups = Object.keys(groupedChunks);
+  const groupCounts = groupedChunks.map((x) => x[1].length);
+  const groups = groupedChunks.map((x) => x[0] as string);
 
   return {
-    groupedChunks: _.flatMap(Object.values(groupedChunks), (x) => x),
+    groupedChunks: _.flatMap(
+      groupedChunks.map((x) => x[1] as CategoryInfo[][]),
+      (x) => x
+    ),
     groupCounts,
     groups,
   };
@@ -58,10 +66,11 @@ export default function GroupedTracks({
   groupSelector,
   showJumpBar,
   mapCustomCardContent,
+  sortGroupsBy = (x) => x[0],
 }: Props) {
   const { groupedChunks, groupCounts, groups } = useMemo(
-    () => createData(items, groupSelector),
-    [items, groupSelector]
+    () => createData(items, groupSelector, sortGroupsBy),
+    [items, groupSelector, sortGroupsBy]
   );
 
   const virtuoso = useRef(null);
