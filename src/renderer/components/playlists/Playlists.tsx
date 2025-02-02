@@ -15,7 +15,10 @@ import {
   useUpdateOwnPlaylist,
 } from 'renderer/app/queries';
 import { CategoryInfo } from 'renderer/types';
+import { setCurrentPlaylist } from 'renderer/slices/music-player-slice';
+import { useDispatch } from 'react-redux';
 import GroupedTracks from '../grouped-tracks/GroupedTracks';
+import TrackGroupCard from '../grouped-tracks/TrackGroupCard';
 
 const playlistGroupSelector: _.ValueIteratee<CategoryInfo> = (x) => x.group;
 
@@ -27,6 +30,23 @@ export default function Playlists() {
   const { data: library } = useMusicLibrary();
   const { data: ownPlaylists } = useOwnPlaylists();
   const createPlaylist = useUpdateOwnPlaylist();
+  const dispatch = useDispatch();
+
+  const playPlaylist = (group: CategoryInfo) => {
+    if (!library) return;
+
+    const tracks = group.trackIds
+      .map((x) => library.tracks[x])
+      .filter((x) => !!x);
+
+    dispatch(
+      setCurrentPlaylist({
+        url: `/playlists/${group.id}`,
+        name: group.name,
+        tracks,
+      })
+    );
+  };
 
   if (!library) return [];
 
@@ -64,8 +84,8 @@ export default function Playlists() {
       ]}
       onNavigateToGroup={(group) => navigate(group.id)}
       groupSelector={playlistGroupSelector}
-      mapCustomCardContent={(id) =>
-        id === CREATE_OWN_PLAYLIST_BUTTON_ID ? (
+      mapCustomCardContent={(group) =>
+        group.id === CREATE_OWN_PLAYLIST_BUTTON_ID ? (
           <CardActionArea sx={{ flex: 1 }} onClick={handleCreateOwnPlaylist}>
             <CardMedia
               sx={{
@@ -87,7 +107,13 @@ export default function Playlists() {
               </Typography>
             </CardContent>
           </CardActionArea>
-        ) : undefined
+        ) : (
+          <TrackGroupCard
+            group={group}
+            onClick={() => navigate(group.id)}
+            onPlayButton={() => playPlaylist(group)}
+          />
+        )
       }
     />
   );

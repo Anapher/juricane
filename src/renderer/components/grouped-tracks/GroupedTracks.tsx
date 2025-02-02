@@ -1,19 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
 import styled from '@emotion/styled';
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Typography,
-} from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
 import _ from 'lodash';
 import { useMemo, useRef, ReactNode } from 'react';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { CategoryInfo } from 'renderer/types';
-import TrackListPreview from '../track-list-preview/TrackListPreview';
 import AlphabeticJumpBar from './AlphabeticJumpBar';
+import TrackGroupCard from './TrackGroupCard';
 
 const GROUPS_PER_ROW = 6;
 
@@ -22,7 +15,7 @@ type Props = {
   onNavigateToGroup: (group: CategoryInfo) => void;
   groupSelector: _.ValueIteratee<CategoryInfo>;
   showJumpBar?: boolean;
-  mapCustomCardContent?: (id: string) => ReactNode | undefined;
+  mapCustomCardContent?: (group: CategoryInfo) => ReactNode | undefined;
   sortGroupsBy?: _.Many<_.ListIteratee<[string, CategoryInfo[][][]]>>;
 };
 
@@ -132,24 +125,11 @@ export default function GroupedTracks({
                     display: 'flex',
                   }}
                 >
-                  {mapCustomCardContent?.(group.id) || (
-                    <CardActionArea
-                      sx={{ flex: 1 }}
+                  {mapCustomCardContent?.(group) || (
+                    <TrackGroupCard
+                      group={group}
                       onClick={() => onNavigateToGroup(group)}
-                    >
-                      <CardMedia>
-                        <TrackListPreview images={group.previewImageTrackIds} />
-                      </CardMedia>
-                      <CardContent>
-                        <Typography
-                          gutterBottom
-                          sx={{ fontSize: { xs: 14, xl: 18 } }}
-                          component="div"
-                        >
-                          {group.name}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
+                    />
                   )}
                 </Card>
               ))}
