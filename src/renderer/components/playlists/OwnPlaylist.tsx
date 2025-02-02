@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Fab,
   Paper,
   Typography,
 } from '@mui/material';
@@ -33,6 +34,10 @@ import {
   useSaveOwnPlaylistConfig,
   useUpdateOwnPlaylist,
 } from 'renderer/app/queries';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCurrentPlaylist } from 'renderer/slices/music-player-slice';
+import { RootState } from 'renderer/app/store';
 import Tracks from '../tracks/Tracks';
 import EditOwnPlaylistDialog from './EditOwnPlaylistDialog';
 
@@ -68,6 +73,7 @@ function RelativeTime({ scheduledTime }: { scheduledTime: string }) {
 
 export default function OwnPlaylist() {
   const { id } = useParams();
+  const playlistUrl = `/playlists/own/${id}`;
 
   const { data: config } = useConfig();
   const { data: library } = useMusicLibrary();
@@ -88,6 +94,11 @@ export default function OwnPlaylist() {
     useState<Date | null>(new Date());
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const currentPlaylist = useSelector(
+    (state: RootState) => state.musicPlayer.currentPlaylist
+  );
 
   const ownPlaylist = ownPlaylists?.find((x) => x.name === id);
   const ownPlaylistRef = useRef(ownPlaylist);
@@ -151,6 +162,16 @@ export default function OwnPlaylist() {
     setSelectedScheduledDate(addHours(new Date(), 1));
   };
 
+  const setPlaylistAsCurrent = () => {
+    dispatch(
+      setCurrentPlaylist({
+        url: playlistUrl,
+        name: ownPlaylist.name,
+        tracks,
+      })
+    );
+  };
+
   return (
     <Box
       flex={1}
@@ -171,7 +192,9 @@ export default function OwnPlaylist() {
           </Typography>
         )}
         <ButtonGroup size="small" variant="contained">
-          <Button onClick={() => setPlayDialogOpen(true)}>Abspielen</Button>
+          <Button onClick={() => setPlayDialogOpen(true)}>
+            Abspielen durch Warteschlange
+          </Button>
           <Button onClick={handleOpenTimerDialog}>Timer</Button>
           <Button onClick={handleEditPlaylist}>Bearbeiten</Button>
           {scheduleConfig && (
@@ -181,6 +204,16 @@ export default function OwnPlaylist() {
           )}
         </ButtonGroup>
       </Box>
+      <Fab
+        color="primary"
+        aria-label="play"
+        onClick={setPlaylistAsCurrent}
+        disabled={currentPlaylist?.url === playlistUrl}
+        size="medium"
+        sx={{ position: 'absolute', left: 16, top: 44 }}
+      >
+        <PlayArrowIcon />
+      </Fab>
       <EditOwnPlaylistDialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
@@ -191,13 +224,13 @@ export default function OwnPlaylist() {
         <Tracks tracks={tracks} disableJumpBar />
       </Paper>
       <Dialog open={playDialogOpen} onClose={() => setPlayDialogOpen(false)}>
-        <DialogTitle>Playlist planen</DialogTitle>
+        <DialogTitle>Playlist an Warteschlange anhängen</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Bist du sicher, dass du in{' '}
-            <b>{config?.playOwnPlaylistNowDelaySeconds} Sekunden</b> die
-            Warteschlange durch die Songs aus der Playlist {ownPlaylist.name}{' '}
-            ersetzen willst?
+            Sind Sie sicher, dass Sie in{' '}
+            <b>{config?.playOwnPlaylistNowDelaySeconds} Sekunden</b> alle Songs
+            der Playlist {ownPlaylist.name} vorne an die Warteschlange anfügen,
+            und den ersten Song automatisch abspielen wollen?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -221,7 +254,7 @@ export default function OwnPlaylist() {
         open={scheduledPlaylistOpen}
         onClose={() => setScheduledPlaylistOpen(false)}
       >
-        <DialogTitle>Playlist abspielen</DialogTitle>
+        <DialogTitle>Playlist planen (Warteschlange ersetzen)</DialogTitle>
         <DialogContent>
           <StaticTimePicker
             autoFocus

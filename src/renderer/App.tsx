@@ -46,7 +46,7 @@ function AppRoutes() {
 
     dispatch(
       setCurrentPlaylist({
-        id: Number(defaultPlaylist.id),
+        url: `/playlists/${defaultPlaylist.id}`,
         name: defaultPlaylist.name,
         tracks: defaultPlaylist.trackIds.map((x) => data.tracks[x]),
       })

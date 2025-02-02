@@ -25,6 +25,8 @@ export default function CategoryTracksPage({
   playlist,
 }: Props) {
   const { id } = useParams();
+  const playlistUrl = `/playlists/${id}`;
+
   const library = useMusicLibrary();
   const dispatch = useDispatch();
   const defaultPlaylist = useDefaultPlaylist();
@@ -46,7 +48,7 @@ export default function CategoryTracksPage({
   const setPlaylistAsCurrent = () => {
     dispatch(
       setCurrentPlaylist({
-        id: Number(data.id),
+        url: playlistUrl,
         name: data.name,
         tracks,
       })
@@ -59,14 +61,14 @@ export default function CategoryTracksPage({
     }
     dispatch(
       setCurrentPlaylist({
-        id: Number(defaultPlaylist.id),
+        url: `/playlists/${defaultPlaylist.id}`,
         name: defaultPlaylist.name,
         tracks: defaultPlaylist.trackIds.map((x) => library.data.tracks[x]),
       })
     );
   };
 
-  const isPlaying = currentPlaylist?.id === Number(data.id);
+  const isPlaying = currentPlaylist?.url === playlistUrl;
   const isDefaultPlaylist = defaultPlaylist?.id === data.id;
 
   return (

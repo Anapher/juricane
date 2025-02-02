@@ -3,7 +3,7 @@ import { Track } from 'renderer/types';
 import { reorder } from 'renderer/utils/dragndrop';
 
 type CurrentPlaylist = {
-  id: number;
+  url: string;
   name: string;
   tracks: Track[];
 };

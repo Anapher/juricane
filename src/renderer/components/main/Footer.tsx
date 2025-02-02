@@ -133,7 +133,7 @@ export default function Footer() {
               sx={{ ml: 1 }}
               icon={<ShuffleIcon />}
               label={playlist?.name}
-              onClick={() => navigate(`/playlists/${playlist?.id}`)}
+              onClick={() => navigate(playlist?.url || '/')}
             />
           </Box>
         </Box>
